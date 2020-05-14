@@ -1,7 +1,7 @@
 from aiogram import types
 from gino import Gino
 from gino.schema import GinoSchemaVisitor
-from sqlalchemy import (Column, Integer, BigInteger, String, Sequence)
+from sqlalchemy import (Column, Integer, BigInteger, String, Sequence, Boolean)
 from sqlalchemy import sql
 
 from config import db_pass, db_user, host
@@ -13,11 +13,30 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-    user_id = Column(BigInteger)
+    user_id = Column(Integer)
     full_name = Column(String(100))
     username = Column(String(50))
-    win_score = Column(Integer)
-    lose_score = Column(Integer)
+    query: sql.Select
+
+
+class HW(db.Model):
+    __tablename__ = 'home_works'
+
+    id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
+    title = Column(String(50))
+    description = Column(String(200))
+    file = Column(String(200))
+    query: sql.Select
+
+
+class Done(db.Model):
+    __tablename__ = 'done_hw'
+
+    id = Column(Integer, Sequence('done_hw_id_seq'), primary_key=True)
+    student_id = Column(Integer)
+    homework_id = Column(Integer)
+    successful = Column(Boolean, default=False)
+    marks = Column(Integer, default=0)
     query: sql.Select
 
 

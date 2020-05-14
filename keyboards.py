@@ -10,32 +10,3 @@ rps_menu = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
-
-new_round_menu = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton(text="New round")
-        ],
-    ],
-    resize_keyboard=True
-)
-
-answer_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton(text="Yes"),
-            KeyboardButton(text="No")
-        ],
-    ],
-    resize_keyboard=True
-)
-
-func_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton(text="/game"),
-            KeyboardButton(text="/score")
-        ],
-    ],
-    resize_keyboard=True
-)

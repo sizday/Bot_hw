@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command, Text, CommandStart
-from keyboards import rps_menu, new_round_menu, answer_keyboard, func_keyboard
+from keyboards import rps_menu
 from state import Game
 import database
 import sticker_id
