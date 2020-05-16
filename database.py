@@ -71,27 +71,20 @@ class DBCommands:
         total = await db.func.count(User.id).gino.scalar()
         return total
 
-    async def show_score(self) -> str:
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        win = current_user.win_score
-        lose = current_user.lose_score
-        if win+lose == 0:
-            score = 'Вы еще не сыграли ни одной игры'
-        else:
-            score = f'Ваш счёт: {win}:{lose}\n' \
-                    f'Процент побед: {round(win/(win+lose)*100)}%'
-        return score
+    async def show_my_marks(self):
+        user_id = types.User.get_current().id
+        marks = await Done.query.where(Done.student_id == user_id).gino().all()
+        return marks
 
-    async def add_win(self):
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        await current_user.update(win_score=current_user.win_score + 1).apply()
+    async def rate_hw(self, user_id, hw_id, mark):
+        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino().first()
+        await current_done.update(marks=mark).apply()
 
-    async def add_lose(self):
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        await current_user.update(lose_score=current_user.lose_score + 1).apply()
+    async def list_unmade_hw(self):
+        user_id = types.User.get_current().id
+        homework_id_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
+        homework_list = [await HW.query.where(HW.id == homework_id).gino().first() for homework_id in homework_id_list]
+        return homework_list
 
 
 async def create_db():
