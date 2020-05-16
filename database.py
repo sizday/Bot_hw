@@ -25,7 +25,7 @@ class HW(db.Model):
     id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
     title = Column(String(50))
     description = Column(String(200))
-    file = Column(String(200))
+    file = Column(String(200), default='')
     query: sql.Select
 
 

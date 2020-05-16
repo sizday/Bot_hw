@@ -22,13 +22,13 @@ async def count_user(message: types.Message):
 
 @dp.message_handler(user_id=admin_id, commands=["cancel"], state=NewHW)
 async def cancel(message: types.Message, state: FSMContext):
-    await message.answer("Вы отменили создание товара")
+    await message.answer("Вы отменили добавление ДЗ")
     await state.reset_state()
 
 
 @dp.message_handler(user_id=admin_id, commands=["add_hw"])
 async def add_item(message: types.Message):
-    await message.answer("Введите название товара или нажмите /cancel")
+    await message.answer("Введите название ДЗ или нажмите /cancel")
     await NewHW.Title.set()
 
 
@@ -59,7 +59,7 @@ async def add_photo(message: types.Message, state: FSMContext):
 @dp.message_handler(user_id=admin_id, state=NewHW.Confirm)
 async def enter_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    hw: HW = data.get("item")
+    hw: HW = data.get("hw")
     await hw.create()
     await message.answer('ДЗ успешно добавлено')
     await state.reset_state()
