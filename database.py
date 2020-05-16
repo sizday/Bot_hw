@@ -12,7 +12,7 @@ db = Gino()
 class User(db.Model):
     __tablename__ = 'users'
 
-    # id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     user_id = Column(Integer)
     full_name = Column(String(100))
     username = Column(String(50))
@@ -22,7 +22,7 @@ class User(db.Model):
 class HW(db.Model):
     __tablename__ = 'home_works'
 
-    #id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
     title = Column(String(50))
     description = Column(String(200))
     file = Column(String(200))
@@ -32,7 +32,7 @@ class HW(db.Model):
 class Done(db.Model):
     __tablename__ = 'done_hw'
 
-    #id = Column(Integer, Sequence('done_hw_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('done_hw_id_seq'), primary_key=True)
     student_id = Column(Integer)
     homework_id = Column(Integer)
     successful = Column(Boolean, default=False)

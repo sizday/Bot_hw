@@ -10,7 +10,7 @@ async def on_shutdown(dp):
 
 async def on_startup(dp):
     await create_db()
-    await bot.send_message(admin_id, "Я запущен!")
+    # await bot.send_message(admin_id, "Я запущен!")
 
 
 if __name__ == '__main__':
