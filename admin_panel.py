@@ -12,11 +12,19 @@ from database import HW
 db = database.DBCommands()
 
 
-@dp.message_handler(user_id=admin_id, commands=["count"])
+@dp.message_handler(user_id=admin_id, commands=["count_user"])
 async def count_user(message: types.Message):
     chat_id = message.from_user.id
     count_users = await db.count_users()
     text = f'В базе {count_users} пользователей'
+    await bot.send_message(chat_id, text)
+
+
+@dp.message_handler(user_id=admin_id, commands=["count_hw"])
+async def count_user(message: types.Message):
+    chat_id = message.from_user.id
+    count_hw = await db.count_hw()
+    text = f'В базе {count_hw} ДЗ'
     await bot.send_message(chat_id, text)
 
 

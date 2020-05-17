@@ -71,6 +71,10 @@ class DBCommands:
         total = await db.func.count(User.id).gino.scalar()
         return total
 
+    async def count_hw(self) -> int:
+        total = await db.func.count(HW.id).gino.scalar()
+        return total
+
     async def show_my_marks(self):
         user_id = types.User.get_current().id
         marks = await Done.query.where(Done.student_id == user_id).gino().all()
@@ -87,13 +91,11 @@ class DBCommands:
         return homework_list
 
     async def list_hw(self):
-        user_id = types.User.get_current().id
-        homework_list = await HW.select('title').where(HW.id == 1).gino().scalar()
-        return str(homework_list)
-
+        hw = await HW.query.gino.all()
+        return hw
 
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    await db.gino.drop_all()
+    # await db.gino.drop_all()
     await db.gino.create_all()

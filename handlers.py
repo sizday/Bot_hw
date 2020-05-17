@@ -28,6 +28,7 @@ async def register_user(message: types.Message):
 @dp.message_handler(commands=['hw'])
 async def my_hw(message: types.Message):
     chat_id = message.from_user.id
-    homework_list = db.list_hw()
-
-    await bot.send_message(chat_id, homework_list)
+    all_hw = await db.list_hw()
+    for num, hw in enumerate(all_hw):
+        text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
+        await bot.send_message(chat_id, text)
