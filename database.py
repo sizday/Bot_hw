@@ -81,20 +81,20 @@ class DBCommands:
 
     async def show_my_marks(self):
         user_id = types.User.get_current().id
-        marks = await Done.query.where(Done.student_id == user_id).gino().all()
+        marks = await Done.query.where(Done.student_id == user_id).gino.all()
         return marks
 
     async def rate_hw(self, user_id, hw_id, mark):
-        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino().first()
+        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
         await current_done.update(marks=mark).apply()
 
     async def done_unmade(self):
         user_id = types.User.get_current().id
-        done_unmade_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
+        done_unmade_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino.all()
         return done_unmade_list
 
     async def unmade_hw(self, homework_id):
-        homework = await HW.query.where(HW.id == homework_id).gino().first()
+        homework = await HW.query.where(HW.id == homework_id).gino.first()
         return homework
 
     async def list_hw(self):
@@ -113,5 +113,5 @@ class DBCommands:
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    await db.gino.drop_all()
+    # await db.gino.drop_all()
     await db.gino.create_all()
