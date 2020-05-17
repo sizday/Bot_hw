@@ -84,12 +84,13 @@ class DBCommands:
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino().first()
         await current_done.update(marks=mark).apply()
 
-    async def list_unmade_hw(self):
+    async def list_unmade_hw_id(self):
         user_id = types.User.get_current().id
-        homework_id_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
-        homework_list = 0
-        for num, homework_id in enumerate(homework_id_list):
-            homework_list = await HW.query.where(HW.id == homework_id).gino().first()
+        homework_id_list = await Done.select('id').where(Done.student_id == user_id and not Done.successful).gino().all()
+        return homework_id_list
+
+    async def list_unmade_hw(self, homework_id):
+        homework_list = await HW.query.where(HW.id == homework_id).gino().first()
         return homework_list
 
     async def list_hw(self):
