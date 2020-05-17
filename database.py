@@ -90,7 +90,7 @@ class DBCommands:
 
     async def done_unmade(self):
         user_id = types.User.get_current().id
-        done_unmade_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
+        done_unmade_list = await Done.query.where(Done.student_id == user_id).gino().all()
         return done_unmade_list
 
     async def unmade_hw(self, homework_id):
