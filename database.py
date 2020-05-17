@@ -88,7 +88,7 @@ class DBCommands:
 
     async def list_hw(self):
         user_id = types.User.get_current().id
-        homework_list = await HW.query.gino().all()
+        homework_list = await HW.query.gino().scalar()
         return homework_list
 
 
