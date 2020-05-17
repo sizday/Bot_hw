@@ -29,10 +29,14 @@ async def my_hw(message: types.Message):
     chat_id = message.from_user.id
     all_unmade_id = await db.done_unmade()
     for num, done in enumerate(all_unmade_id):
+        text = f'id = {done.id}\nstudent_id = {done.student_id}\n' \
+               f'hw_id = {done.homework_id}\nsuccessful = {done.successful}'
+        await bot.send_message(chat_id, text)
+        '''
         current_hw = db.get_hw(done.homework_id)
         for num1, hw in enumerate(current_hw):
             text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
-            await bot.send_message(chat_id, text)
+            await bot.send_message(chat_id, text)'''
 
 
 @dp.message_handler(commands=['all_hw'])
