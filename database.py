@@ -66,7 +66,7 @@ class DBCommands:
         all_hw = await self.list_hw()
         for num, hw in enumerate(all_hw):
             new_done = Done()
-            new_done.student_id = new_user.user_id
+            new_done.student_id = new_user.id
             new_done.homework_id = hw.id
             await new_done.create()
         return new_user, 'new'
@@ -104,6 +104,10 @@ class DBCommands:
     async def list_user(self):
         users = await User.query.gino.all()
         return users
+
+    async def list_done(self):
+        done = await Done.query.gino.all()
+        return done
 
 
 async def create_db():

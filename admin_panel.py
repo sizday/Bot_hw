@@ -12,6 +12,15 @@ from keyboards import confirm_menu, func_menu
 db = database.DBCommands()
 
 
+@dp.message_handler(user_id=admin_id, commands=["done"])
+async def my_hw(message: types.Message):
+    chat_id = message.from_user.id
+    all_hw = await db.list_done()
+    for num, hw in enumerate(all_hw):
+        text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
+        await bot.send_message(chat_id, text)
+
+
 @dp.message_handler(user_id=admin_id, commands=["count_user"])
 async def count_user(message: types.Message):
     chat_id = message.from_user.id
@@ -70,9 +79,9 @@ async def enter_price(message: types.Message, state: FSMContext):
     hw: HW = data.get("hw")
     await hw.create()
     all_user = await db.list_user()
-    for num, hw in enumerate(all_user):
+    for num, user in enumerate(all_user):
         new_done = Done()
-        new_done.student_id = hw.id
+        new_done.student_id = user.id
         new_done.homework_id = hw.id
         await new_done.create()
     await message.answer('ДЗ успешно добавлено', reply_markup=func_menu)
