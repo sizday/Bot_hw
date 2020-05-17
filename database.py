@@ -63,7 +63,7 @@ class DBCommands:
         new_user.username = user.username
         new_user.full_name = user.full_name
         await new_user.create()
-        all_hw = await db.list_hw()
+        all_hw = await self.list_hw()
         for num, hw in enumerate(all_hw):
             new_done = Done()
             new_done.student_id = new_user.user_id
