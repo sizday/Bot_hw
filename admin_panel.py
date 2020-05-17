@@ -15,9 +15,9 @@ db = database.DBCommands()
 @dp.message_handler(user_id=admin_id, commands=["done"])
 async def my_hw(message: types.Message):
     chat_id = message.from_user.id
-    all_hw = await db.list_done()
-    for num, hw in enumerate(all_hw):
-        text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
+    all_done = await db.list_done()
+    for num, done in enumerate(all_done):
+        text = f'id = {done.id}\nstudent_id = {done.student_id}\nhw_id = {done.homework_id}'
         await bot.send_message(chat_id, text)
 
 
