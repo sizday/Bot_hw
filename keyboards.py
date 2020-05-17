@@ -1,11 +1,20 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-rps_menu = ReplyKeyboardMarkup(
+confirm_menu = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Rock"),
-            KeyboardButton(text="Paper"),
-            KeyboardButton(text="Scissors")
+            KeyboardButton(text="confirm"),
+            KeyboardButton(text="/cancel"),
+        ],
+    ],
+    resize_keyboard=True
+)
+
+func_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="/add_hw"),
+            KeyboardButton(text="/hw"),
         ],
     ],
     resize_keyboard=True

@@ -8,7 +8,7 @@ import database
 from config import admin_id
 from load_all import dp, bot
 from database import HW
-
+from keyboards import confirm_menu, func_menu
 db = database.DBCommands()
 
 
@@ -59,7 +59,7 @@ async def add_photo(message: types.Message, state: FSMContext):
     hw.description = description
 
     await message.answer(f"Название: {hw.title}\nОписание: {description}")
-
+    await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
     await NewHW.Confirm.set()
     await state.update_data(hw=hw)
 
@@ -69,5 +69,5 @@ async def enter_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     await hw.create()
-    await message.answer('ДЗ успешно добавлено')
+    await message.answer('ДЗ успешно добавлено', reply_markup=func_menu)
     await state.reset_state()

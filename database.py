@@ -87,15 +87,18 @@ class DBCommands:
     async def list_unmade_hw(self):
         user_id = types.User.get_current().id
         homework_id_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
-        homework_list = [await HW.query.where(HW.id == homework_id).gino().first() for homework_id in homework_id_list]
+        homework_list = 0
+        for num, homework_id in enumerate(homework_id_list):
+            homework_list = await HW.query.where(HW.id == homework_id).gino().first()
         return homework_list
 
     async def list_hw(self):
         hw = await HW.query.gino.all()
         return hw
 
+
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    # await db.gino.drop_all()
+    await db.gino.drop_all()
     await db.gino.create_all()
