@@ -17,7 +17,8 @@ async def my_hw(message: types.Message):
     chat_id = message.from_user.id
     all_done = await db.list_done()
     for num, done in enumerate(all_done):
-        text = f'id = {done.id}\nstudent_id = {done.student_id}\nhw_id = {done.homework_id}'
+        text = f'id = {done.id}\nstudent_id = {done.student_id}\n' \
+               f'hw_id = {done.homework_id}\nsuccessful = {done.successful}'
         await bot.send_message(chat_id, text)
 
 
