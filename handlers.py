@@ -28,7 +28,6 @@ async def register_user(message: types.Message):
 @dp.message_handler(commands=['hw'])
 async def my_hw(message: types.Message):
     chat_id = message.from_user.id
-    homework_list = list(db.list_unmade_hw())
-    for homework in homework_list:
-        text = homework.title
-        await bot.send_message(chat_id, text)
+    homework_list = db.list_hw()
+
+    await bot.send_message(chat_id, homework_list)
