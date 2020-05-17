@@ -22,7 +22,7 @@ class User(db.Model):
 class HW(db.Model):
     __tablename__ = 'home_works'
 
-    id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     title = Column(String(50))
     description = Column(String(200))
     file = Column(String(200), default='')
@@ -32,7 +32,7 @@ class HW(db.Model):
 class Done(db.Model):
     __tablename__ = 'done_hw'
 
-    id = Column(Integer, Sequence('done_hw_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     student_id = Column(Integer)
     homework_id = Column(Integer)
     successful = Column(Boolean, default=False)
@@ -62,9 +62,13 @@ class DBCommands:
         new_user.user_id = user.id
         new_user.username = user.username
         new_user.full_name = user.full_name
-        new_user.win_score = 0
-        new_user.lose_score = 0
         await new_user.create()
+        all_hw = await db.list_hw()
+        for num, hw in enumerate(all_hw):
+            new_done = Done()
+            new_done.student_id = new_user.user_id
+            new_done.homework_id = hw.id
+            await new_done.create()
         return new_user, 'new'
 
     async def count_users(self) -> int:
@@ -84,22 +88,26 @@ class DBCommands:
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino().first()
         await current_done.update(marks=mark).apply()
 
-    async def list_unmade_hw_id(self):
+    async def done_unmade(self):
         user_id = types.User.get_current().id
-        homework_id_list = await Done.select('id').where(Done.student_id == user_id and not Done.successful).gino().all()
-        return homework_id_list
+        done_unmade_list = await Done.query.where(Done.student_id == user_id and not Done.successful).gino().all()
+        return done_unmade_list
 
-    async def list_unmade_hw(self, homework_id):
-        homework_list = await HW.query.where(HW.id == homework_id).gino().first()
-        return homework_list
+    async def unmade_hw(self, homework_id):
+        homework = await HW.query.where(HW.id == homework_id).gino().first()
+        return homework
 
     async def list_hw(self):
         hw = await HW.query.gino.all()
         return hw
 
+    async def list_user(self):
+        users = await User.query.gino.all()
+        return users
+
 
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    # await db.gino.drop_all()
+    await db.gino.drop_all()
     await db.gino.create_all()

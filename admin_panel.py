@@ -7,7 +7,7 @@ from state import NewHW
 import database
 from config import admin_id
 from load_all import dp, bot
-from database import HW
+from database import HW, User, Done
 from keyboards import confirm_menu, func_menu
 db = database.DBCommands()
 
@@ -69,5 +69,11 @@ async def enter_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     await hw.create()
+    all_user = await db.list_user()
+    for num, hw in enumerate(all_user):
+        new_done = Done()
+        new_done.student_id = hw.id
+        new_done.homework_id = hw.id
+        await new_done.create()
     await message.answer('ДЗ успешно добавлено', reply_markup=func_menu)
     await state.reset_state()
