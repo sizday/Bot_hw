@@ -33,8 +33,8 @@ async def cancel(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands=['hw'])
 async def my_hw(message: types.Message):
-    all_unmade_id = await db.done_unmade()
-    for num, done in enumerate(all_unmade_id):
+    all_unmade_hw = await db.done_unmade()
+    for num, done in enumerate(all_unmade_hw):
         current_hw = await db.get_hw(done.homework_id)
         text = f"<b>ДЗ</b> \t№{current_hw.id}: <u>{current_hw.title}</u>\n<b>Описание:</b> {current_hw.description}\n"
         await message.answer_document(document=current_hw.file, caption=text)
@@ -77,7 +77,7 @@ async def enter_price(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands=['all_hw'])
-async def all_hw(message: types.Message):
+async def all_homework(message: types.Message):
     all_hw = await db.list_hw()
     for num, hw in enumerate(all_hw):
         text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
