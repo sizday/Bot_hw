@@ -65,12 +65,12 @@ async def push_hw(message: types.Message, state: FSMContext):
     done.answer = document
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
     await DoneHW.Confirm.set()
-    await state.reset_state()
 
 
 @dp.message_handler(state=DoneHW.Confirm)
-async def enter_price(message: types.Message):
+async def enter_price(message: types.Message, state: FSMContext):
     await message.answer('ДЗ успешно отправлено')
+    await state.reset_state()
 
 
 @dp.message_handler(commands=['all_hw'])
