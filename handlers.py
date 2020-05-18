@@ -69,6 +69,9 @@ async def push_hw(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=DoneHW.Confirm)
 async def enter_price(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    done: Done = data.get("done")
+    done.successful = True
     await message.answer('ДЗ успешно отправлено')
     await state.reset_state()
 
