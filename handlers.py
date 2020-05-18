@@ -51,7 +51,8 @@ async def choose_hw(message: types.Message, state: FSMContext):
         await message.answer("Неверное значение, введите число")
         return
     await message.answer(f'Пришлите решение ДЗ №{hw_id} или нажмите /cancel')
-    done = await db.get_done(student_id=chat_id, homework_id=hw_id)
+    user = await db.get_user(chat_id)
+    done = await db.get_done(student_id=user.id, homework_id=hw_id)
     await state.update_data(done=done)
     await DoneHW.Push.set()
 
