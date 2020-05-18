@@ -5,8 +5,10 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command, Text, CommandStart
 from state import DoneHW
+from database import User, HW, Done
 import database
 import sticker_id
+from keyboards import confirm_menu
 from load_all import bot, dp
 
 db = database.DBCommands()
@@ -23,6 +25,12 @@ async def register_user(message: types.Message):
         await message.answer(text)
 
 
+@dp.message_handler(commands=["cancel"], state=DoneHW)
+async def cancel(message: types.Message, state: FSMContext):
+    await message.answer("Вы отменили сдачу ДЗ")
+    await state.reset_state()
+
+
 @dp.message_handler(commands=['hw'])
 async def my_hw(message: types.Message):
     all_unmade_id = await db.done_unmade()
@@ -30,20 +38,38 @@ async def my_hw(message: types.Message):
         current_hw = await db.get_hw(done.homework_id)
         text = f"<b>ДЗ</b> \t№{current_hw.id}: <u>{current_hw.title}</u>\n<b>Описание:</b> {current_hw.description}\n"
         await message.answer_document(document=current_hw.file, caption=text)
-    await message.answer('Выберете номер ДЗ')
+    await message.answer('Выберете номер ДЗ или нажмите /cancel')
     await DoneHW.Choose.set()
 
 
 @dp.message_handler(state=DoneHW.Choose)
 async def choose_hw(message: types.Message, state: FSMContext):
+    chat_id = message.from_user.id
     try:
         hw_id = int(message.text)
     except ValueError:
         await message.answer("Неверное значение, введите число")
         return
-    await message.answer(f'Пришлите решение ДЗ №{hw_id}')
-    hw = await db.get_hw(hw_id)
-    await state.update_data(hw=hw)
+    await message.answer(f'Пришлите решение ДЗ №{hw_id} или нажмите /cancel')
+    done = await db.get_done(student_id=chat_id, homework_id=hw_id)
+    await state.update_data(done=done)
+    await DoneHW.Push.set()
+
+
+@dp.message_handler(state=DoneHW.Push)
+async def push_hw(message: types.Message, state: FSMContext):
+    document = message.document.file_id
+    data = await state.get_data()
+    done: Done = data.get("hw")
+    done.answer = document
+    await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
+    await DoneHW.Confirm.set()
+    await state.reset_state()
+
+
+@dp.message_handler(state=DoneHW.Confirm)
+async def enter_price(message: types.Message):
+    await message.answer('ДЗ успешно отправлено')
 
 
 @dp.message_handler(commands=['all_hw'])

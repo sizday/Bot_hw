@@ -75,7 +75,8 @@ async def add_document(message: types.Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.file = document
-    await message.answer(f"Название: {hw.title}\nОписание: {hw.description}")
+    text = f"Название: {hw.title}\nОписание: {hw.description}"
+    await message.answer_document(document=hw.file, caption=text)
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
     await NewHW.Confirm.set()
     await state.update_data(hw=hw)

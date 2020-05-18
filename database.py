@@ -25,7 +25,7 @@ class HW(db.Model):
     id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
     title = Column(String(50))
     description = Column(String(200))
-    file = Column(String(200), default='')
+    file = Column(String(200))
     query: sql.Select
 
 
@@ -35,6 +35,7 @@ class Done(db.Model):
     id = Column(Integer, Sequence('done_id_seq'), primary_key=True)
     student_id = Column(Integer)
     homework_id = Column(Integer)
+    answer = Column(String(200), default='')
     successful = Column(Boolean, default=False)
     marks = Column(Integer, default=0)
     query: sql.Select
@@ -97,6 +98,10 @@ class DBCommands:
     async def get_hw(self, homework_id) -> HW:
         homework = await HW.query.where(HW.id == homework_id).gino.first()
         return homework
+
+    async def get_done(self, student_id, homework_id) -> Done:
+        done = await Done.query.where(Done.student_id == student_id and Done.homework_id == homework_id).gino.first()
+        return done
 
     async def list_hw(self):
         hw = await HW.query.gino.all()
