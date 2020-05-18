@@ -96,7 +96,7 @@ class DBCommands:
     async def done_unmade(self):
         user_id = types.User.get_current().id
         user = await self.get_user(user_id)
-        done_unmade_list = await Done.query.where(Done.student_id == user.id & Done.successful == False).gino.all()
+        done_unmade_list = await Done.query.where((Done.student_id == user.id) & (Done.successful == False)).gino.all()
         return done_unmade_list
 
     async def get_hw(self, homework_id) -> HW:
@@ -104,7 +104,7 @@ class DBCommands:
         return homework
 
     async def get_done(self, student_id, homework_id) -> Done:
-        done = await Done.query.where(Done.student_id == student_id & Done.homework_id == homework_id).gino.first()
+        done = await Done.query.where(Done.student_id == student_id and Done.homework_id == homework_id).gino.first()
         return done
 
     async def list_hw(self):
