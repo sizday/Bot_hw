@@ -56,7 +56,7 @@ async def choose_hw(message: types.Message, state: FSMContext):
     await DoneHW.Push.set()
 
 
-@dp.message_handler(state=DoneHW.Push)
+@dp.message_handler(state=DoneHW.Push, content_types=types.ContentType.DOCUMENT)
 async def push_hw(message: types.Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
