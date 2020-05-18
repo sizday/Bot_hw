@@ -14,28 +14,25 @@ db = database.DBCommands()
 
 @dp.message_handler(user_id=admin_id, commands=["done"])
 async def my_hw(message: types.Message):
-    chat_id = message.from_user.id
     all_done = await db.list_done()
     for num, done in enumerate(all_done):
         text = f'id = {done.id}\nstudent_id = {done.student_id}\n' \
                f'hw_id = {done.homework_id}\nsuccessful = {done.successful}'
-        await bot.send_message(chat_id, text)
+        await message.answer(text)
 
 
 @dp.message_handler(user_id=admin_id, commands=["count_user"])
 async def count_user(message: types.Message):
-    chat_id = message.from_user.id
     count_users = await db.count_users()
     text = f'В базе {count_users} пользователей'
-    await bot.send_message(chat_id, text)
+    await message.answer(text)
 
 
 @dp.message_handler(user_id=admin_id, commands=["count_hw"])
 async def count_user(message: types.Message):
-    chat_id = message.from_user.id
     count_hw = await db.count_hw()
     text = f'В базе {count_hw} ДЗ'
-    await bot.send_message(chat_id, text)
+    await message.answer(text)
 
 
 @dp.message_handler(user_id=admin_id, commands=["cancel"], state=NewHW)
@@ -62,13 +59,23 @@ async def enter_name(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(user_id=admin_id, state=NewHW.Description)
-async def add_photo(message: types.Message, state: FSMContext):
+async def add_description(message: types.Message, state: FSMContext):
     description = message.text
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.description = description
+    await message.answer(f"Пришлите файл ДЗ")
+    await NewHW.Document.set()
+    await state.update_data(hw=hw)
 
-    await message.answer(f"Название: {hw.title}\nОписание: {description}")
+
+@dp.message_handler(user_id=admin_id, state=NewHW.Document, content_types=types.ContentType.DOCUMENT)
+async def add_document(message: types.Message, state: FSMContext):
+    document = message.document.file_id
+    data = await state.get_data()
+    hw: HW = data.get("hw")
+    hw.file = document
+    await message.answer(f"Название: {hw.title}\nОписание: {hw.description}")
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
     await NewHW.Confirm.set()
     await state.update_data(hw=hw)
