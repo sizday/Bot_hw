@@ -89,6 +89,10 @@ class DBCommands:
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
         await current_done.update(marks=mark).apply()
 
+    async def update_done(self, user_id, hw_id):
+        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
+        await current_done.update(successful=True).apply()
+
     async def done_unmade(self):
         user_id = types.User.get_current().id
         user = await self.get_user(user_id)
