@@ -35,6 +35,7 @@ async def cancel(message: types.Message, state: FSMContext):
 async def my_hw(message: types.Message):
     all_unmade_hw = await db.done_unmade()
     for num, done in enumerate(all_unmade_hw):
+        await message.answer(done.id)
         current_hw = await db.get_hw(done.homework_id)
         text = f"<b>ДЗ</b> \t№{current_hw.id}: <u>{current_hw.title}</u>\n<b>Описание:</b> {current_hw.description}\n"
         await message.answer_document(document=current_hw.file, caption=text)
