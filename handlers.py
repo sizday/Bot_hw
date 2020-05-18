@@ -60,7 +60,7 @@ async def choose_hw(message: types.Message, state: FSMContext):
 async def push_hw(message: types.Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
-    done: Done = data.get("hw")
+    done: Done = data.get("done")
     done.answer = document
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
     await DoneHW.Confirm.set()
