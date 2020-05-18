@@ -72,6 +72,7 @@ async def enter_price(message: types.Message, state: FSMContext):
     data = await state.get_data()
     done: Done = data.get("done")
     done.successful = True
+    await done.update()
     await message.answer('ДЗ успешно отправлено')
     await state.reset_state()
 
