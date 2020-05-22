@@ -25,6 +25,14 @@ async def register_user(message: types.Message):
         await message.answer(text)
 
 
+@dp.message_handler(commands=["marks"])
+async def my_marks(message: types.Message):
+    marks = await db.my_marks()
+    for num, mark in enumerate(marks):
+        text = f'ДЗ №{num}: {mark}'
+        await message.answer(text)
+
+
 @dp.message_handler(commands=["cancel"], state=DoneHW)
 async def cancel(message: types.Message, state: FSMContext):
     await message.answer("Вы отменили сдачу ДЗ")
@@ -73,6 +81,7 @@ async def enter_price(message: types.Message, state: FSMContext):
     done: Done = data.get("done")
     await db.update_done(done.student_id, done.homework_id)
     await message.answer('ДЗ успешно отправлено')
+
     await state.reset_state()
 
 

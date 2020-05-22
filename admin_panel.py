@@ -35,6 +35,14 @@ async def count_user(message: types.Message):
     await message.answer(text)
 
 
+@dp.message_handler(user_id=admin_id, commands=["rating"])
+async def user_rating(message: types.Message):
+    users_marks = db.rating()
+    for num, mark in enumerate(users_marks):
+        text = f'{mark}'
+        await message.answer(text)
+
+
 @dp.message_handler(user_id=admin_id, commands=["cancel"], state=NewHW)
 async def cancel(message: types.Message, state: FSMContext):
     await message.answer("Вы отменили добавление ДЗ")
@@ -75,6 +83,17 @@ async def add_document(message: types.Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.file = document
+    await message.answer(f"Пришлите файл ответов")
+    await NewHW.Answer.set()
+    await state.update_data(hw=hw)
+
+
+@dp.message_handler(user_id=admin_id, state=NewHW.Answer, content_types=types.ContentType.DOCUMENT)
+async def add_document(message: types.Message, state: FSMContext):
+    document = message.document.file_id
+    data = await state.get_data()
+    hw: HW = data.get("hw")
+    hw.answer = document
     text = f"Название: {hw.title}\nОписание: {hw.description}"
     await message.answer_document(document=hw.file, caption=text)
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)

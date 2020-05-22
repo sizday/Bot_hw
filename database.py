@@ -3,6 +3,7 @@ from gino import Gino
 from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, BigInteger, String, Sequence, Boolean)
 from sqlalchemy import sql
+import operator
 
 from config import db_pass, db_user, host
 
@@ -26,6 +27,7 @@ class HW(db.Model):
     title = Column(String(50))
     description = Column(String(200))
     file = Column(String(200))
+    answer = Column(String(200))
     query: sql.Select
 
 
@@ -80,10 +82,29 @@ class DBCommands:
         total = await db.func.count(HW.id).gino.scalar()
         return total
 
-    async def show_my_marks(self):
+    async def my_marks(self):
         user_id = types.User.get_current().id
         marks = await Done.query.where(Done.student_id == user_id).gino.all()
         return marks
+
+    async def marks_user(self, user):
+        user_id = user.id
+        marks = await Done.query.where(Done.student_id == user_id).gino.all()
+        return marks
+
+    async def rating(self):
+        all_users = await self.list_user()
+        marks_user = {}
+        for num, user in enumerate(all_users):
+            marks = await self.marks_user(user)
+            sum = 0
+            count = 0
+            for num, mark in enumerate(marks):
+                sum += mark
+                count += 1
+            marks_user.update({user.id: sum/count})
+        sorted_marks = sorted(marks_user.items(), key=operator.itemgetter(1), reverse=True)
+        return sorted_marks
 
     async def rate_hw(self, user_id, hw_id, mark):
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
@@ -123,5 +144,5 @@ class DBCommands:
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    await db.gino.drop_all()
+    # await db.gino.drop_all()
     await db.gino.create_all()

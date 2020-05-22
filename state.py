@@ -11,4 +11,5 @@ class NewHW(StatesGroup):
     Title = State()
     Description = State()
     Document = State()
+    Answer = State()
     Confirm = State()
