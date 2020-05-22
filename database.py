@@ -1,8 +1,9 @@
 from aiogram import types
 from gino import Gino
 from gino.schema import GinoSchemaVisitor
-from sqlalchemy import (Column, Integer, BigInteger, String, Sequence)
+from sqlalchemy import (Column, Integer, BigInteger, String, Sequence, Boolean)
 from sqlalchemy import sql
+import operator
 
 from config import db_pass, db_user, host
 
@@ -13,11 +14,32 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-    user_id = Column(BigInteger)
+    user_id = Column(Integer)
     full_name = Column(String(100))
     username = Column(String(50))
-    win_score = Column(Integer)
-    lose_score = Column(Integer)
+    query: sql.Select
+
+
+class HW(db.Model):
+    __tablename__ = 'home_works'
+
+    id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
+    title = Column(String(50))
+    description = Column(String(200))
+    file = Column(String(200))
+    answer = Column(String(200))
+    query: sql.Select
+
+
+class Done(db.Model):
+    __tablename__ = 'done_hw'
+
+    id = Column(Integer, Sequence('done_id_seq'), primary_key=True)
+    student_id = Column(Integer)
+    homework_id = Column(Integer)
+    answer = Column(String(200), default='')
+    successful = Column(Boolean, default=False)
+    marks = Column(Integer, default=0)
     query: sql.Select
 
 
@@ -43,40 +65,84 @@ class DBCommands:
         new_user.user_id = user.id
         new_user.username = user.username
         new_user.full_name = user.full_name
-        new_user.win_score = 0
-        new_user.lose_score = 0
         await new_user.create()
+        all_hw = await self.list_hw()
+        for num, hw in enumerate(all_hw):
+            new_done = Done()
+            new_done.student_id = new_user.id
+            new_done.homework_id = hw.id
+            await new_done.create()
         return new_user, 'new'
 
     async def count_users(self) -> int:
         total = await db.func.count(User.id).gino.scalar()
         return total
 
-    async def show_score(self) -> str:
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        win = current_user.win_score
-        lose = current_user.lose_score
-        if win+lose == 0:
-            score = 'Вы еще не сыграли ни одной игры'
-        else:
-            score = f'Ваш счёт: {win}:{lose}\n' \
-                    f'Процент побед: {round(win/(win+lose)*100)}%'
-        return score
+    async def count_hw(self) -> int:
+        total = await db.func.count(HW.id).gino.scalar()
+        return total
 
-    async def add_win(self):
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        await current_user.update(win_score=current_user.win_score + 1).apply()
+    async def my_marks(self):
+        user_id = types.User.get_current().id
+        marks = await Done.query.where(Done.student_id == user_id).gino.all()
+        return marks
 
-    async def add_lose(self):
-        user = types.User.get_current()
-        current_user = await self.get_user(user.id)
-        await current_user.update(lose_score=current_user.lose_score + 1).apply()
+    async def marks_user(self, user):
+        user_id = user.id
+        marks = await Done.query.where(Done.student_id == user_id).gino.all()
+        return marks
+
+    async def rating(self):
+        all_users = await self.list_user()
+        marks_user = {}
+        for num, user in enumerate(all_users):
+            marks = await self.marks_user(user)
+            sum = 0
+            count = 0
+            for num, mark in enumerate(marks):
+                sum += mark
+                count += 1
+            marks_user.update({user.id: sum/count})
+        sorted_marks = sorted(marks_user.items(), key=operator.itemgetter(1), reverse=True)
+        return sorted_marks
+
+    async def rate_hw(self, user_id, hw_id, mark):
+        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
+        await current_done.update(marks=mark).apply()
+
+    async def update_done(self, user_id, hw_id):
+        current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
+        await current_done.update(successful=True).apply()
+
+    async def done_unmade(self):
+        user_id = types.User.get_current().id
+        user = await self.get_user(user_id)
+        done_unmade_list = await Done.query.where((Done.student_id == user.id) & (Done.successful == False)).gino.all()
+        return done_unmade_list
+
+    async def get_hw(self, homework_id) -> HW:
+        homework = await HW.query.where(HW.id == homework_id).gino.first()
+        return homework
+
+    async def get_done(self, student_id, homework_id) -> Done:
+        done = await Done.query.where(Done.student_id == student_id and Done.homework_id == homework_id).gino.first()
+        return done
+
+    async def list_hw(self):
+        hw = await HW.query.gino.all()
+        return hw
+
+    async def list_user(self):
+        users = await User.query.gino.all()
+        return users
+
+    async def list_done(self):
+        done = await Done.query.gino.all()
+        return done
 
 
 async def create_db():
     await db.set_bind(f'postgresql://{db_user}:{db_pass}@{host}/gino')
     db.gino: GinoSchemaVisitor
-    await db.gino.drop_all()
+    # await db.gino.drop_all()
     await db.gino.create_all()
