@@ -1,47 +1,40 @@
-from asyncio import sleep
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.dispatcher.filters import Command, Text
 from state import NewHW
 import database
 from config import admin_id
-from load_all import dp, bot
+from load_all import dp
 from database import HW, User, Done
 from keyboards import confirm_menu, func_menu
 db = database.DBCommands()
 
-
-@dp.message_handler(user_id=admin_id, commands=["done"])
+'''
+@dp.message_handler(user_id=admin_id, Command("done"))
 async def my_hw(message: types.Message):
     all_done = await db.list_done()
     for num, done in enumerate(all_done):
         text = f'id = {done.id}\nstudent_id = {done.student_id}\n' \
                f'hw_id = {done.homework_id}\nsuccessful = {done.successful}'
         await message.answer(text)
+'''
 
 
-@dp.message_handler(user_id=admin_id, commands=["count_user"])
+@dp.message_handler(user_id=admin_id, Command("count_user"))
 async def count_user(message: types.Message):
     count_users = await db.count_users()
     text = f'В базе {count_users} пользователей'
     await message.answer(text)
 
 
-@dp.message_handler(user_id=admin_id, commands=["count_hw"])
-async def count_user(message: types.Message):
-    count_hw = await db.count_hw()
-    text = f'В базе {count_hw} ДЗ'
-    await message.answer(text)
-
-
-@dp.message_handler(user_id=admin_id, commands=["cancel"], state=NewHW)
+@dp.message_handler(user_id=admin_id, Command("cancel"), state=NewHW)
 async def cancel(message: types.Message, state: FSMContext):
     await message.answer("Вы отменили добавление ДЗ")
     await state.reset_state()
 
 
-@dp.message_handler(user_id=admin_id, commands=["add_hw"])
+@dp.message_handler(user_id=admin_id, Command("add_hw"))
 async def add_item(message: types.Message):
     await message.answer("Введите название ДЗ или нажмите /cancel")
     await NewHW.Title.set()

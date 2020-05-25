@@ -1,5 +1,3 @@
-import random
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
@@ -7,9 +5,8 @@ from aiogram.dispatcher.filters import Command, Text, CommandStart
 from state import DoneHW
 from database import User, HW, Done
 import database
-import sticker_id
 from keyboards import confirm_menu
-from load_all import bot, dp
+from load_all import dp
 
 db = database.DBCommands()
 
@@ -25,13 +22,13 @@ async def register_user(message: types.Message):
         await message.answer(text)
 
 
-@dp.message_handler(commands=["cancel"], state=DoneHW)
+@dp.message_handler(Command("cancel"), state=DoneHW)
 async def cancel(message: types.Message, state: FSMContext):
     await message.answer("Вы отменили сдачу ДЗ")
     await state.reset_state()
 
 
-@dp.message_handler(commands=['hw'])
+@dp.message_handler(Command('hw'))
 async def my_hw(message: types.Message):
     all_unmade_hw = await db.done_unmade()
     for num, done in enumerate(all_unmade_hw):
@@ -76,7 +73,7 @@ async def enter_price(message: types.Message, state: FSMContext):
     await state.reset_state()
 
 
-@dp.message_handler(commands=['all_hw'])
+@dp.message_handler(Command('all_hw'))
 async def all_homework(message: types.Message):
     all_hw = await db.list_hw()
     for num, hw in enumerate(all_hw):

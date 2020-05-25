@@ -3,7 +3,6 @@ from gino import Gino
 from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, BigInteger, String, Sequence, Boolean)
 from sqlalchemy import sql
-
 from config import db_pass, db_user, host
 
 db = Gino()
@@ -47,6 +46,34 @@ class DBCommands:
         user = await User.query.where(User.user_id == user_id).gino.first()
         return user
 
+    async def get_hw(self, homework_id) -> HW:
+        homework = await HW.query.where(HW.id == homework_id).gino.first()
+        return homework
+
+    async def get_done(self, student_id, homework_id) -> Done:
+        done = await Done.query.where(Done.student_id == student_id and Done.homework_id == homework_id).gino.first()
+        return done
+
+    async def list_hw(self):
+        hw = await HW.query.gino.all()
+        return hw
+
+    async def list_user(self):
+        users = await User.query.gino.all()
+        return users
+
+    async def list_done(self):
+        done = await Done.query.gino.all()
+        return done
+
+    async def count_users(self) -> int:
+        total = await db.func.count(User.id).gino.scalar()
+        return total
+
+    async def count_hw(self) -> int:
+        total = await db.func.count(HW.id).gino.scalar()
+        return total
+
     async def exist_user(self) -> str:
         user = types.User.get_current()
         old_user = await self.get_user(user.id)
@@ -72,14 +99,6 @@ class DBCommands:
             await new_done.create()
         return new_user, 'new'
 
-    async def count_users(self) -> int:
-        total = await db.func.count(User.id).gino.scalar()
-        return total
-
-    async def count_hw(self) -> int:
-        total = await db.func.count(HW.id).gino.scalar()
-        return total
-
     async def show_my_marks(self):
         user_id = types.User.get_current().id
         marks = await Done.query.where(Done.student_id == user_id).gino.all()
@@ -98,26 +117,6 @@ class DBCommands:
         user = await self.get_user(user_id)
         done_unmade_list = await Done.query.where((Done.student_id == user.id) & (Done.successful == False)).gino.all()
         return done_unmade_list
-
-    async def get_hw(self, homework_id) -> HW:
-        homework = await HW.query.where(HW.id == homework_id).gino.first()
-        return homework
-
-    async def get_done(self, student_id, homework_id) -> Done:
-        done = await Done.query.where(Done.student_id == student_id and Done.homework_id == homework_id).gino.first()
-        return done
-
-    async def list_hw(self):
-        hw = await HW.query.gino.all()
-        return hw
-
-    async def list_user(self):
-        users = await User.query.gino.all()
-        return users
-
-    async def list_done(self):
-        done = await Done.query.gino.all()
-        return done
 
 
 async def create_db():
