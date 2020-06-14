@@ -23,7 +23,8 @@ def compare_answer(answer_list, test_list):
     for i in range(len(answer_list)):
         if answer_list[i] == test_list[i]:
             count += 1
-    print(f'Процент выполнения = {round(count/len(answer_list)*100)}%')
+    result = round(count/len(answer_list)*100)
+    return result
 
 
 open_file('text_file/answer.txt', 'text_file/hw_test.txt')

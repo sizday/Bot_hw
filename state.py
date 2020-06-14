@@ -9,6 +9,8 @@ class DoneHW(StatesGroup):
 
 class NewHW(StatesGroup):
     Title = State()
+    Type = State()
     Description = State()
     Document = State()
+    Answer = State()
     Confirm = State()

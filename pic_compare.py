@@ -1,16 +1,13 @@
 import cv2
-import difflib
 
 
-# Функция вычисления хэша
 def calc_image_hash(filename):
-    image = cv2.imread(filename)  # Прочитаем картинку
-    resized = cv2.resize(image, (8, 8), interpolation=cv2.INTER_AREA)  # Уменьшим картинку
-    gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)  # Переведем в черно-белый формат
-    avg = gray_image.mean()  # Среднее значение пикселя
-    ret, threshold_image = cv2.threshold(gray_image, avg, 255, 0)  # Бинаризация по порогу
+    image = cv2.imread(filename)
+    resized = cv2.resize(image, (8, 8), interpolation=cv2.INTER_AREA)
+    gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+    avg = gray_image.mean()
+    ret, threshold_image = cv2.threshold(gray_image, avg, 255, 0)
 
-    # Рассчитаем хэш
     _hash = ""
     for x in range(8):
         for y in range(8):
@@ -33,8 +30,8 @@ def compare_hash(hash_1pic, hash_2pic):
     return count
 
 
-hash1 = calc_image_hash("img/original.png")
-hash2 = calc_image_hash("img/logo.jpg")
-print(hash1)
-print(hash2)
-print(compare_hash(hash1, hash2))
+def compare_picture(my_file, original_file):
+    hash1 = calc_image_hash(my_file)
+    hash2 = calc_image_hash(original_file)
+    percent = compare_hash(hash1, hash2)
+    return percent

@@ -32,14 +32,9 @@ def check_text(filename, language):
         if word not in stop_word:
             if not d.check(word):
                 mistakes += 1
-                print(word)
-                print(d.suggest(word))
-    print(mistakes)
-    '''
-    print(d.check("short-story"))
-    print(d.check("shortstory"))
-    print(d.suggest("Yevgeny"))
-    '''
+                # print(word)
+                # print(d.suggest(word))
+    return mistakes
 
 
 # check_text('text_en.txt', 'en_EN')

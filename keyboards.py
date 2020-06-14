@@ -19,3 +19,17 @@ func_menu = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
+type_hw_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Test'),
+            KeyboardButton(text='Grammar'),
+        ],
+        [
+            KeyboardButton(text='Python'),
+            KeyboardButton(text='Picture'),
+        ]
+    ],
+    resize_keyboard=True
+)

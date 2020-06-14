@@ -12,7 +12,7 @@ db = database.DBCommands()
 
 
 @dp.message_handler(CommandStart())
-async def register_user(message: types.Message):
+async def register_user(message: Message):
     user = await db.add_new_user()
     if user[1] == 'old':
         text = f'Вы уже зарегистрированы'
@@ -23,13 +23,13 @@ async def register_user(message: types.Message):
 
 
 @dp.message_handler(Command("cancel"), state=DoneHW)
-async def cancel(message: types.Message, state: FSMContext):
+async def cancel(message: Message, state: FSMContext):
     await message.answer("Вы отменили сдачу ДЗ")
     await state.reset_state()
 
 
 @dp.message_handler(Command('hw'))
-async def my_hw(message: types.Message):
+async def my_hw(message: Message):
     all_unmade_hw = await db.done_unmade()
     for num, done in enumerate(all_unmade_hw):
         current_hw = await db.get_hw(done.homework_id)
@@ -40,7 +40,7 @@ async def my_hw(message: types.Message):
 
 
 @dp.message_handler(state=DoneHW.Choose)
-async def choose_hw(message: types.Message, state: FSMContext):
+async def choose_hw(message: Message, state: FSMContext):
     chat_id = message.from_user.id
     try:
         hw_id = int(message.text)
@@ -55,7 +55,7 @@ async def choose_hw(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(state=DoneHW.Push, content_types=types.ContentType.DOCUMENT)
-async def push_hw(message: types.Message, state: FSMContext):
+async def push_hw(message: Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
     done: Done = data.get("done")
@@ -65,16 +65,19 @@ async def push_hw(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(state=DoneHW.Confirm)
-async def enter_price(message: types.Message, state: FSMContext):
+async def enter_price(message: Message, state: FSMContext):
     data = await state.get_data()
     done: Done = data.get("done")
     await db.update_done(done.student_id, done.homework_id)
     await message.answer('ДЗ успешно отправлено')
+    hw = await db.get_hw(done.homework_id)
+    mark = await db.check_hw(done.student_id, done.homework_id, done.answer, hw.answer)
+    await message.answer(f'ДЗ проверено, ваша оценка = {mark}')
     await state.reset_state()
 
 
 @dp.message_handler(Command('all_hw'))
-async def all_homework(message: types.Message):
+async def all_homework(message: Message):
     all_hw = await db.list_hw()
     for num, hw in enumerate(all_hw):
         text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
