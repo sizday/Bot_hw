@@ -1,5 +1,4 @@
 from auto_check import open_file
-from grammatic import check_text
 from pic_compare import compare_picture
     
     
@@ -24,18 +23,6 @@ class TestHW(TypeHW):
     def set_mark(self):
         self.mark = self.percent / 20 + 1
 
-
-class GrammarHW(TypeHW):
-    name = 'Grammar'
-
-    def check_hw(self, my_file, language):
-        self.percent = check_text(my_file, language)
-    
-    def set_mark(self):
-        if self.percent > 12:
-            self.mark = 1
-        else:
-            self.mark = 5 - self.percent / 3
 
 
 class PictureHW(TypeHW):
