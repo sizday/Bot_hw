@@ -1,4 +1,4 @@
-import enchant
+from enchant import Dict
 import string
 
 
@@ -26,7 +26,7 @@ def check_text(filename, language):
         stop_word = ['', '—', '--', '-го']
     else:
         stop_word = ['', '—', 'th', 's']
-    d = enchant.Dict(language)
+    d = Dict(language)
     mistakes = 0
     for word in list_text:
         if word not in stop_word:
