@@ -8,7 +8,6 @@ import database
 from config import admin_id
 from load_all import dp
 from database import HW, User, Done
-from typeHW import TypeHW, TestHW, PictureHW, GrammarHW
 from keyboards import confirm_menu, func_menu, type_hw_menu
 db = database.DBCommands()
 
@@ -30,13 +29,13 @@ async def count_user(message: Message):
     await message.answer(text)
 
 
-@dp.message_handler(user_id=admin_id, Command("cancel"), state=NewHW)
+@dp.message_handler(Command("cancel"), user_id=admin_id, state=NewHW)
 async def cancel(message: Message, state: FSMContext):
     await message.answer("Вы отменили добавление ДЗ")
     await state.reset_state()
 
 
-@dp.message_handler(user_id=admin_id, Command("add_hw"))
+@dp.message_handler(Command("add_hw"), user_id=admin_id)
 async def add_item(message: Message):
     await message.answer("Введите название ДЗ или нажмите /cancel")
     await NewHW.Title.set()
