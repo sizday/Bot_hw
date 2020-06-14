@@ -79,7 +79,7 @@ async def add_document(message: Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.file = document
-    await message.answer(f"Пришлите файл ответов")
+    await message.answer(f"Пришлите файл ответов или /cancel")
     await NewHW.Answer.set()
     await state.update_data(hw=hw)
 

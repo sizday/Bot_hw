@@ -34,6 +34,7 @@ class Done(db.Model):
     id = Column(Integer, Sequence('done_id_seq'), primary_key=True)
     student_id = Column(Integer)
     homework_id = Column(Integer)
+    answer = Column(String(200))
     successful = Column(Boolean, default=False)
     marks = Column(Integer, default=0)
     query: sql.Select
@@ -115,9 +116,10 @@ class DBCommands:
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
         await current_done.update(marks=mark).apply()
 
-    async def update_done(self, user_id, hw_id):
+    async def update_done(self, user_id, hw_id, answer):
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()
         await current_done.update(successful=True).apply()
+        await current_done.update(answer=answer).apply()
 
     async def done_unmade(self):
         user_id = types.User.get_current().id

@@ -62,6 +62,7 @@ async def push_hw(message: Message, state: FSMContext):
     done: Done = data.get("done")
     done.answer = document
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
+    await state.update_data(done=done)
     await DoneHW.Confirm.set()
 
 
@@ -69,7 +70,7 @@ async def push_hw(message: Message, state: FSMContext):
 async def enter_price(message: Message, state: FSMContext):
     data = await state.get_data()
     done: Done = data.get("done")
-    await db.update_done(done.student_id, done.homework_id)
+    await db.update_done(done.student_id, done.homework_id, done.answer)
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
