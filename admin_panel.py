@@ -23,7 +23,7 @@ async def my_hw(message: Message):
 '''
 
 
-@dp.message_handler(user_id=admin_id, Command("count_user"))
+@dp.message_handler(Command("count_user"), user_id=admin_id)
 async def count_user(message: Message):
     count_users = await db.count_users()
     text = f'В базе {count_users} пользователей'
