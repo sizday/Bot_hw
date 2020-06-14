@@ -3,3 +3,5 @@ gino~=1.0.1
 python-dotenv
 aiogram~=2.9.2
 opencv-python~=4.2.0.34
+config~=0.5.0.post0
+pyenchant~=3.1.1
