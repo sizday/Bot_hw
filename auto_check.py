@@ -5,7 +5,7 @@ def open_file(file_name_answer, file_name_test):
     test_file = open(file_name_test, encoding='utf-8')
     test = file_to_list(test_file)
     test_file.close()
-    compare_answer(answer, test)
+    return compare_answer(answer, test)
 
 
 def file_to_list(answer):
@@ -23,8 +23,9 @@ def compare_answer(answer_list, test_list):
     for i in range(len(answer_list)):
         if answer_list[i] == test_list[i]:
             count += 1
-    result = round(count/len(answer_list)*100)
-    return result
+    percent = round(count/len(answer_list)*100)
+    mark = int(percent / 20) + 1
+    return percent, mark
 
 
 open_file('text_file/answer.txt', 'text_file/hw_test.txt')

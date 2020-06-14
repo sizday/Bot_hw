@@ -65,15 +65,7 @@ async def add_description(message: Message, state: FSMContext):
 
 @dp.message_handler(user_id=admin_id, state=NewHW.Type)
 async def add_type(message: Message, state: FSMContext):
-    string_type = message.text
-    if string_type == 'Test':
-        type_hw = TestHW()
-    elif string_type == 'Grammar':
-        type_hw = GrammarHW()
-    elif string_type == 'Picture':
-        type_hw = PictureHW()
-    else:
-        type_hw = TypeHW
+    type_hw = message.text
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.type = type_hw

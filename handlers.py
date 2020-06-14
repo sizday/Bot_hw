@@ -7,6 +7,7 @@ from database import User, HW, Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
+from auto_check import open_file
 
 db = database.DBCommands()
 
@@ -71,8 +72,12 @@ async def enter_price(message: Message, state: FSMContext):
     await db.update_done(done.student_id, done.homework_id)
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
-    mark = await db.check_hw(done.student_id, done.homework_id, done.answer, hw.answer)
-    await message.answer(f'ДЗ проверено, ваша оценка = {mark}')
+    if hw.type == 'Test':
+        result = open_file(hw.answer, done.answer)
+        await db.rate_hw(done.student_id, done.homework_id, result[1])
+    else:
+        result = (0, 0)
+    await message.answer(f'ДЗ проверено, ваша оценка = {result[1]}')
     await state.reset_state()
 
 

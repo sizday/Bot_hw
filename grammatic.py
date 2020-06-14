@@ -1,3 +1,4 @@
+"""
 from enchant import Dict
 import string
 
@@ -39,3 +40,4 @@ def check_text(filename, language):
 
 # check_text('text_en.txt', 'en_EN')
 check_text('text_file/text_ru.txt', 'ru_RU')
+"""

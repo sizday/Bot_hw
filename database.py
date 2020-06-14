@@ -1,7 +1,7 @@
 from aiogram import types
 from gino import Gino
 from gino.schema import GinoSchemaVisitor
-from sqlalchemy import (Column, Integer, BigInteger, String, Sequence, Boolean)
+from sqlalchemy import (Column, Integer, String, Sequence, Boolean)
 from sqlalchemy import sql
 from config import db_pass, db_user, host
 from typeHW import TypeHW
@@ -23,7 +23,7 @@ class HW(db.Model):
     id = Column(Integer, Sequence('hw_id_seq'), primary_key=True)
     title = Column(String(50))
     description = Column(String(200))
-    type = Column(TypeHW)
+    type = Column(String(200))
     file = Column(String(200))
     answer = Column(String(200))
     query: sql.Select
