@@ -79,9 +79,9 @@ async def enter_price(message: Message, state: FSMContext):
     if hw.type == 'Test':
         answer = await bot.get_file(file_id=hw.answer)
         test = await bot.get_file(file_id=done.answer)
-        answer.download(f'./{hw.answer}')
-        test.download(f'./{done.answer}')
-        result = open_file_name(hw.answer, done.answer)
+        answer.download(f'./1.txt')
+        test.download(f'./2.txt')
+        result = open_file_name('1.txt', '2.txt')
         for answer in result[1]:
             await message.answer(answer)
         for test in result[2]:
