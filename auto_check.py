@@ -16,7 +16,7 @@ def open_file(answer_file, test_file):
 
 def file_to_list(answer):
     answer_list = []
-    for num, line in enumerate(answer):
+    for line in answer:
         if line.endswith('\n'):
             line = line[:-1]
         line = line[3:]

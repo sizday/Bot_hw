@@ -1,3 +1,5 @@
+import os
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
@@ -75,9 +77,16 @@ async def enter_price(message: Message, state: FSMContext):
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
+        save_dir = os.getcwd()
         answer = bot.get_file(file_id=hw.answer)
         test = bot.get_file(file_id=done.answer)
-        result = open_file(answer, test)
+        downloaded_file_answer = bot.download_file(answer.file_path)
+        with open(save_dir + "/" + answer.file_name, 'wb') as new_file1:
+            new_file1.write(downloaded_file_answer)
+        downloaded_file_test = bot.download_file(test.file_path)
+        with open(save_dir + "/" + test.file_name, 'wb') as new_file2:
+            new_file2.write(downloaded_file_test)
+        result = open_file(new_file1, new_file2)
         for answer in result[1]:
             await message.answer(answer)
         for test in result[2]:
