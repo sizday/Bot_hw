@@ -33,4 +33,4 @@ def compare_answer(answer_list, test_list):
     return mark
 
 
-print(open_file_local('text_file/answer.txt', 'text_file/hw_test.txt'))
+print(open_file('text_file/answer.txt', 'text_file/hw_test.txt'))
