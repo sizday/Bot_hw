@@ -75,10 +75,10 @@ async def enter_price(message: Message, state: FSMContext):
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
         result = open_file(hw.answer, done.answer)
-        for i in range(result[1]):
-            await message.answer(result[1][i])
-        for i in range(result[2]):
-            await message.answer(result[2][i])
+        for answer in result[1]:
+            await message.answer(answer)
+        for test in result[2]:
+            await message.answer(test)
         await db.rate_hw(done.student_id, done.homework_id, result[0])
     else:
         result = 0
