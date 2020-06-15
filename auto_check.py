@@ -1,10 +1,11 @@
+import requests
+
+
 def open_file(file_name_answer, file_name_test):
-    answer_file = open(file_name_answer, encoding='utf-8')
-    answer = file_to_list(answer_file)
-    answer_file.close()
-    test_file = open(file_name_test, encoding='utf-8')
-    test = file_to_list(test_file)
-    test_file.close()
+    answer_file = requests.get(file_name_answer)
+    answer = file_to_list(answer_file.text)
+    test_file = requests.get(file_name_test)
+    test = file_to_list(test_file.text)
     return compare_answer(answer, test)
 
 
@@ -26,6 +27,3 @@ def compare_answer(answer_list, test_list):
     percent = round(count/len(answer_list)*100)
     mark = int(percent / 20) + 1
     return percent, mark
-
-
-open_file('text_file/answer.txt', 'text_file/hw_test.txt')
