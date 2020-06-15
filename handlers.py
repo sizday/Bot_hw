@@ -77,11 +77,10 @@ async def enter_price(message: Message, state: FSMContext):
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
-        await message.answer(f'{hw.answer}\n{done.answer}')
         answer = bot.get_file(file_id=hw.answer)
         test = bot.get_file(file_id=done.answer)
-        answer.download(f'./{hw.answer}')
-        test.download(f'./{done.answer}')
+        for num, w in enumerate(answer):
+            await message.answer(f'{w}')
         result = open_file(hw.answer, done.answer)
         for answer in result[1]:
             await message.answer(answer)
