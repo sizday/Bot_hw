@@ -7,7 +7,7 @@ from database import User, HW, Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
-# from auto_check import open_file
+from auto_check import open_file
 
 db = database.DBCommands()
 
