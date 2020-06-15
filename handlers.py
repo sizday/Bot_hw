@@ -9,7 +9,7 @@ from database import User, HW, Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
-from auto_check import open_file
+from auto_check import open_file, open_file_name
 from load_all import bot
 
 db = database.DBCommands()
@@ -79,7 +79,9 @@ async def enter_price(message: Message, state: FSMContext):
     if hw.type == 'Test':
         answer = await bot.get_file(file_id=hw.answer)
         test = await bot.get_file(file_id=done.answer)
-        result = open_file(answer, test)
+        answer.download(f'./{hw.answer}')
+        test.download(f'./{done.answer}')
+        result = open_file_name(hw.answer, done.answer)
         for answer in result[1]:
             await message.answer(answer)
         for test in result[2]:
