@@ -13,11 +13,9 @@ def open_file_local(file_name_answer, file_name_test):
 
 
 def open_file(file_name_answer, file_name_test):
-    # answer_file = requests.get(f'https://api.telegram.org/file/bot{TOKEN}/{file_name_answer}')
-    answer_file = requests.get('http://textfiles.com/adventure/aencounter.txt')
+    answer_file = requests.get(f'https://api.telegram.org/file/bot{TOKEN}/{file_name_answer}')
     answer = file_to_list(answer_file.text)
-    # test_file = requests.get(f'https://api.telegram.org/file/bot{TOKEN}/{file_name_test}')
-    test_file = requests.get('http://textfiles.com/adventure/aencounter.txt')
+    test_file = requests.get(f'https://api.telegram.org/file/bot{TOKEN}/{file_name_test}')
     test = file_to_list(test_file.text)
     return compare_answer(answer, test), answer, test
 
