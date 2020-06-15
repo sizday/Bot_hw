@@ -25,6 +25,5 @@ def compare_answer(answer_list, test_list):
     for i in range(len(answer_list)):
         if answer_list[i] == test_list[i]:
             count += 1
-    percent = round(count/len(answer_list)*100)
-    mark = int(percent / 20) + 1
-    return percent, mark
+    mark = round(count/len(answer_list)*100) // 20
+    return mark

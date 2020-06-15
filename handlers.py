@@ -75,10 +75,10 @@ async def enter_price(message: Message, state: FSMContext):
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
         result = open_file(hw.answer, done.answer)
-        await db.rate_hw(done.student_id, done.homework_id, result[1])
+        await db.rate_hw(done.student_id, done.homework_id, result)
     else:
-        result = (0, 0)
-    await message.answer(f'ДЗ проверено, ваша оценка = {result[1]}')
+        result = 0
+    await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
 
 
