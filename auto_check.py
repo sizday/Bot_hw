@@ -1,4 +1,4 @@
-def open_file_local(file_name_answer, file_name_test):
+def open_file(file_name_answer, file_name_test):
     answer_file = open(file_name_answer)
     answer = file_to_list(answer_file)
     answer_file.close()
@@ -8,7 +8,7 @@ def open_file_local(file_name_answer, file_name_test):
     return compare_answer(answer, test)
 
 
-def open_file(answer_file, test_file):
+def open_file_url(answer_file, test_file):
     answer = file_to_list(answer_file)
     test = file_to_list(test_file)
     return compare_answer(answer, test), answer, test
