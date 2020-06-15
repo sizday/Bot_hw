@@ -4,7 +4,6 @@ from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, String, Sequence, Boolean)
 from sqlalchemy import sql
 from config import db_pass, db_user, host
-from typeHW import TypeHW
 
 db = Gino()
 
