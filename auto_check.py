@@ -31,6 +31,3 @@ def compare_answer(answer_list, test_list):
             count += 1
     mark = round(count/len(answer_list)*100) // 20
     return mark
-
-
-print(open_file_name('text_file/answer.txt', 'text_file/hw_test.txt'))
