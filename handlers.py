@@ -81,7 +81,7 @@ async def enter_price(message: Message, state: FSMContext):
         test_file = await bot.get_file(file_id=done.answer)
         answer: io.BytesIO = await bot.download_file(answer_file.file_path)
         test: io.BytesIO = await bot.download_file(test_file.file_path)
-        result = open_file_name(answer, test)
+        result = open_file(answer, test)
         for answer_list in result[1]:
             await message.answer(answer_list)
         for test_list in result[2]:
