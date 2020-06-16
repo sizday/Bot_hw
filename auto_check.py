@@ -14,7 +14,9 @@ def open_file(answer_file, test_file):
     test = file_to_list(test_file.getvalue())
     return compare_answer(answer, test), answer, test
     """
-    return answer_file.getvalue(), test_file.getvalue(), 0
+    answer = str(answer_file.getvalue(), 'utf-8')
+    test = str(test_file.getvalue(), 'utf-8')
+    return answer, test, 0
 
 
 def file_to_list(answer):
