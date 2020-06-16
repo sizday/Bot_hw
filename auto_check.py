@@ -9,9 +9,12 @@ def open_file_name(file_name_answer, file_name_test):
 
 
 def open_file(answer_file, test_file):
+    """
     answer = file_to_list(answer_file.getvalue())
     test = file_to_list(test_file.getvalue())
     return compare_answer(answer, test), answer, test
+    """
+    return answer_file.getvalue(), test_file.getvalue(), 0
 
 
 def file_to_list(answer):
