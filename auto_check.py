@@ -16,7 +16,7 @@ def open_file(answer_file, test_file):
     """
     answer = str(answer_file.getvalue(), 'utf-8')
     test = str(test_file.getvalue(), 'utf-8')
-    return answer, test, 0
+    return answer
 
 
 def file_to_list(answer):
