@@ -13,7 +13,7 @@ def open_file(answer_file, test_file):
     test_text = str(test_file.getvalue(), 'utf-8')
     answer = file_to_list(answer_text)
     test = file_to_list(test_text)
-    return compare_answer(answer, test)
+    return compare_answer(answer, test), answer, test
 
 
 def file_to_list(answer):
