@@ -9,8 +9,8 @@ def open_file_name(file_name_answer, file_name_test):
 
 
 def open_file(answer_file, test_file):
-    answer = file_to_list(answer_file)
-    test = file_to_list(test_file)
+    answer = file_to_list(answer_file.getvalue())
+    test = file_to_list(test_file.getvalue())
     return compare_answer(answer, test), answer, test
 
 
@@ -31,3 +31,6 @@ def compare_answer(answer_list, test_list):
             count += 1
     mark = round(count/len(answer_list)*100) // 20
     return mark
+
+
+# print(open_file_name('text_file/answer.txt', 'text_file/hw_test.txt'))
