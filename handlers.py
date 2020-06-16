@@ -1,3 +1,5 @@
+import io
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
@@ -75,15 +77,15 @@ async def enter_price(message: Message, state: FSMContext):
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
     if hw.type == 'Test':
-        answer = await bot.get_file(file_id=hw.answer)
-        test = await bot.get_file(file_id=done.answer)
-        await bot.download_file(answer.file_path)
-        await bot.download_file(test.file_path)
-        result = open_file_name('1.txt', '2.txt')
-        for answer in result[1]:
-            await message.answer(answer)
-        for test in result[2]:
-            await message.answer(test)
+        answer_file = await bot.get_file(file_id=hw.answer)
+        test_file = await bot.get_file(file_id=done.answer)
+        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        test: io.BytesIO = await bot.download_file(test_file.file_path)
+        result = open_file_name(answer, test)
+        for answer_list in result[1]:
+            await message.answer(answer_list)
+        for test_list in result[2]:
+            await message.answer(test_list)
         await db.rate_hw(done.student_id, done.homework_id, result[0])
     else:
         result = 0
