@@ -11,9 +11,12 @@ def open_file_name(file_name_answer, file_name_test):
 def open_file(answer_file, test_file):
     answer_text = str(answer_file.getvalue(), 'utf-8')
     test_text = str(test_file.getvalue(), 'utf-8')
+    """
     answer = file_to_list(answer_text)
     test = file_to_list(test_text)
     return compare_answer(answer, test), answer, test
+    """
+    return 0, answer_text, test_text
 
 
 def file_to_list(answer):
