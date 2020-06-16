@@ -82,12 +82,10 @@ async def enter_price(message: Message, state: FSMContext):
         answer: io.BytesIO = await bot.download_file(answer_file.file_path)
         test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = open_file(answer, test)
-        await message.answer(result[1])
-        await message.answer(result[2])
-        await db.rate_hw(done.student_id, done.homework_id, result[0])
+        await db.rate_hw(done.student_id, done.homework_id, result)
     else:
         result = 0
-    await message.answer(f'ДЗ проверено, ваша оценка = {result[0]}')
+    await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
 
 
