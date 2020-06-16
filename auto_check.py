@@ -9,14 +9,11 @@ def open_file_name(file_name_answer, file_name_test):
 
 
 def open_file(answer_file, test_file):
-    """
-    answer = file_to_list(answer_file.getvalue())
-    test = file_to_list(test_file.getvalue())
-    return compare_answer(answer, test), answer, test
-    """
-    answer = str(answer_file.getvalue(), 'utf-8')
-    test = str(test_file.getvalue(), 'utf-8')
-    return answer
+    answer_text = str(answer_file.getvalue(), 'utf-8')
+    test_text = str(test_file.getvalue(), 'utf-8')
+    answer = file_to_list(answer_text)
+    test = file_to_list(test_text)
+    return compare_answer(answer, test)
 
 
 def file_to_list(answer):
