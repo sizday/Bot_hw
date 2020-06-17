@@ -1,4 +1,5 @@
-import enchant
+"""
+from enchant import Dict
 import string
 
 
@@ -26,21 +27,17 @@ def check_text(filename, language):
         stop_word = ['', '—', '--', '-го']
     else:
         stop_word = ['', '—', 'th', 's']
-    d = enchant.Dict(language)
+    d = Dict(language)
     mistakes = 0
     for word in list_text:
         if word not in stop_word:
             if not d.check(word):
                 mistakes += 1
-                print(word)
-                print(d.suggest(word))
-    print(mistakes)
-    '''
-    print(d.check("short-story"))
-    print(d.check("shortstory"))
-    print(d.suggest("Yevgeny"))
-    '''
+                # print(word)
+                # print(d.suggest(word))
+    return mistakes
 
 
 # check_text('text_en.txt', 'en_EN')
 check_text('text_file/text_ru.txt', 'ru_RU')
+"""

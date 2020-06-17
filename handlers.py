@@ -1,4 +1,4 @@
-import random
+import io
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -7,15 +7,16 @@ from aiogram.dispatcher.filters import Command, Text, CommandStart
 from state import DoneHW
 from database import User, HW, Done
 import database
-import sticker_id
 from keyboards import confirm_menu
-from load_all import bot, dp
+from load_all import dp
+from auto_check import open_file, open_file_name
+from load_all import bot
 
 db = database.DBCommands()
 
 
 @dp.message_handler(CommandStart())
-async def register_user(message: types.Message):
+async def register_user(message: Message):
     user = await db.add_new_user()
     if user[1] == 'old':
         text = f'Вы уже зарегистрированы'
@@ -25,22 +26,14 @@ async def register_user(message: types.Message):
         await message.answer(text)
 
 
-@dp.message_handler(commands=["marks"])
-async def my_marks(message: types.Message):
-    marks = await db.my_marks()
-    for num, mark in enumerate(marks):
-        text = f'ДЗ №{num}: {mark}'
-        await message.answer(text)
-
-
-@dp.message_handler(commands=["cancel"], state=DoneHW)
-async def cancel(message: types.Message, state: FSMContext):
+@dp.message_handler(Command("cancel"), state=DoneHW)
+async def cancel(message: Message, state: FSMContext):
     await message.answer("Вы отменили сдачу ДЗ")
     await state.reset_state()
 
 
-@dp.message_handler(commands=['hw'])
-async def my_hw(message: types.Message):
+@dp.message_handler(Command('hw'))
+async def my_hw(message: Message):
     all_unmade_hw = await db.done_unmade()
     for num, done in enumerate(all_unmade_hw):
         current_hw = await db.get_hw(done.homework_id)
@@ -51,7 +44,7 @@ async def my_hw(message: types.Message):
 
 
 @dp.message_handler(state=DoneHW.Choose)
-async def choose_hw(message: types.Message, state: FSMContext):
+async def choose_hw(message: Message, state: FSMContext):
     chat_id = message.from_user.id
     try:
         hw_id = int(message.text)
@@ -66,27 +59,38 @@ async def choose_hw(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(state=DoneHW.Push, content_types=types.ContentType.DOCUMENT)
-async def push_hw(message: types.Message, state: FSMContext):
+async def push_hw(message: Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
     done: Done = data.get("done")
     done.answer = document
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
+    await state.update_data(done=done)
     await DoneHW.Confirm.set()
 
 
 @dp.message_handler(state=DoneHW.Confirm)
-async def enter_price(message: types.Message, state: FSMContext):
+async def enter_price(message: Message, state: FSMContext):
     data = await state.get_data()
     done: Done = data.get("done")
-    await db.update_done(done.student_id, done.homework_id)
+    await db.update_done(done.student_id, done.homework_id, done.answer)
     await message.answer('ДЗ успешно отправлено')
-
+    hw = await db.get_hw(done.homework_id)
+    if hw.type == 'Test':
+        answer_file = await bot.get_file(file_id=hw.answer)
+        test_file = await bot.get_file(file_id=done.answer)
+        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        test: io.BytesIO = await bot.download_file(test_file.file_path)
+        result = open_file(answer, test)
+        await db.rate_hw(done.student_id, done.homework_id, result)
+    else:
+        result = 0
+    await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
 
 
-@dp.message_handler(commands=['all_hw'])
-async def all_homework(message: types.Message):
+@dp.message_handler(Command('all_hw'))
+async def all_homework(message: Message):
     all_hw = await db.list_hw()
     for num, hw in enumerate(all_hw):
         text = f"<b>ДЗ</b> \t№{hw.id}: <u>{hw.title}</u>\n<b>Описание:</b> {hw.description}\n"
