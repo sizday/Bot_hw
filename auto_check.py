@@ -1,21 +1,26 @@
-def open_file(file_name_answer, file_name_test):
-    answer_file = open(file_name_answer, encoding='utf-8')
+def open_file_name(file_name_answer, file_name_test):
+    answer_file = open(file_name_answer)
     answer = file_to_list(answer_file)
     answer_file.close()
-    test_file = open(file_name_test, encoding='utf-8')
+    test_file = open(file_name_test)
     test = file_to_list(test_file)
     test_file.close()
-    compare_answer(answer, test)
+    return compare_answer(answer, test)
 
 
-def file_to_list(answer):
-    answer_list = []
-    for line in answer:
-        if line.endswith('\n'):
-            line = line[:-1]
-        line = line[3:]
-        answer_list.append(line)
-    return answer_list
+def open_file(answer_file, test_file):
+    answer_text = str(answer_file.getvalue(), 'utf-8')
+    test_text = str(test_file.getvalue(), 'utf-8')
+    answer = file_to_list(answer_text)
+    test = file_to_list(test_text)
+    return compare_answer(answer, test)
+
+
+def file_to_list(text):
+    lists = text.split('\n')
+    if lists[-1] == '':
+        lists.pop()
+    return lists
 
 
 def compare_answer(answer_list, test_list):
@@ -23,7 +28,8 @@ def compare_answer(answer_list, test_list):
     for i in range(len(answer_list)):
         if answer_list[i] == test_list[i]:
             count += 1
-    print(f'Процент выполнения = {round(count/len(answer_list)*100)}%')
+    mark = round(count/len(answer_list)*100) // 20
+    return mark
 
 
-open_file('text_file/answer.txt', 'text_file/hw_test.txt')
+# print(open_file_name('text_file/answer.txt', 'text_file/hw_test.txt'))
