@@ -14,4 +14,4 @@ def compare_files(answer_file, program_file):
         mark = 5
     else:
         mark = 2
-    return mark, answer_text, data_text
+    return mark
