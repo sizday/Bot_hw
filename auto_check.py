@@ -1,13 +1,3 @@
-def open_file_name(file_name_answer, file_name_test):
-    answer_file = open(file_name_answer)
-    answer = file_to_list(answer_file)
-    answer_file.close()
-    test_file = open(file_name_test)
-    test = file_to_list(test_file)
-    test_file.close()
-    return compare_answer(answer, test)
-
-
 def open_file(answer_file, test_file):
     answer_text = str(answer_file.getvalue(), 'utf-8')
     test_text = str(test_file.getvalue(), 'utf-8')

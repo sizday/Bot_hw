@@ -1,6 +1,4 @@
 import io
-import os
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
@@ -13,6 +11,7 @@ from load_all import dp
 from auto_check import open_file
 from load_all import bot
 from pic_compare import compare_picture
+from python_check import compare_files
 
 
 db = database.DBCommands()
@@ -94,12 +93,11 @@ async def enter_price(message: Message, state: FSMContext):
         result = compare_picture(answer, test)
         await db.rate_hw(done.student_id, done.homework_id, result)
     elif hw.type == 'Python':
-        python_file = await bot.get_file(file_id=done.answer)
-        python: io.BytesIO = await bot.download_file(python_file.file_path)
-        temp_origin = "my_program.py"
-        with open(temp_origin, 'wb') as original_file:
-            original_file.write(python.read())
-        result = os.system('python my_program.py')
+        answer_file = await bot.get_file(file_id=done.answer)
+        test_file = await bot.get_file(file_id=done.answer)
+        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        python: io.BytesIO = await bot.download_file(test_file.file_path)
+        result = compare_files(answer, python)
     else:
         result = 0
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
