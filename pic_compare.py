@@ -44,14 +44,12 @@ def compare_picture(original, test):
     os.remove(temp_test)
     os.remove(temp_origin)
     percent = compare_hash(hash1, hash2)
-    """
-    if percent < 20:
+    if percent < 7:
         mark = 5
-    elif percent < 30:
+    elif percent < 12:
         mark = 4
-    elif percent < 40:
+    elif percent < 18:
         mark = 3
     else:
         mark = 2
-    """
-    return percent
+    return mark
