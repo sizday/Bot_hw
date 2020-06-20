@@ -94,7 +94,7 @@ async def enter_price(message: Message, state: FSMContext):
         result = compare_picture(answer, test)
         await db.rate_hw(done.student_id, done.homework_id, result)
     elif hw.type == 'Python':
-        python_file = await bot.get_file(file_id=hw.answer)
+        python_file = await bot.get_file(file_id=done.answer)
         python: io.BytesIO = await bot.download_file(python_file.file_path)
         temp_origin = "my_program.py"
         with open(temp_origin, 'wb') as original_file:
