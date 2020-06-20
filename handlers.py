@@ -88,8 +88,8 @@ async def enter_price(message: Message, state: FSMContext):
         result = compare_picture(answer, test)
     elif hw.type == 'Python':
         data = compare_files(answer, test)
-        await message.answer(f'{data[0]}\n{data[1]}')
-        result = 0
+        await message.answer(f'-{data[1]}-\n-{data[2]}-')
+        result = data[0]
     else:
         result = 0
     await db.rate_hw(done.student_id, done.homework_id, result)
