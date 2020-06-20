@@ -78,30 +78,19 @@ async def enter_price(message: Message, state: FSMContext):
     await db.update_done(done.student_id, done.homework_id, done.answer)
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
+    answer_file = await bot.get_file(file_id=hw.answer)
+    test_file = await bot.get_file(file_id=done.answer)
+    answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+    test: io.BytesIO = await bot.download_file(test_file.file_path)
     if hw.type == 'Test':
-        answer_file = await bot.get_file(file_id=hw.answer)
-        test_file = await bot.get_file(file_id=done.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
-        test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = open_file(answer, test)
-        await db.rate_hw(done.student_id, done.homework_id, result)
     elif hw.type == 'Picture':
-        answer_file = await bot.get_file(file_id=hw.answer)
-        test_file = await bot.get_file(file_id=done.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
-        test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = compare_picture(answer, test)
-        await db.rate_hw(done.student_id, done.homework_id, result)
     elif hw.type == 'Python':
-        answer_file = await bot.get_file(file_id=done.answer)
-        test_file = await bot.get_file(file_id=done.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
-        python: io.BytesIO = await bot.download_file(test_file.file_path)
-        result = 0
-        data = compare_files(answer, python)
-        await message.answer(f'{data[0]}\n{data[1]}')
+        result = compare_files(answer, test)
     else:
         result = 0
+    await db.rate_hw(done.student_id, done.homework_id, result)
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
 
