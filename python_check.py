@@ -7,7 +7,7 @@ def compare_files(answer_file, program_file):
     temp_origin = "my_program.py"
     with open(temp_origin, 'wb') as original_file:
         original_file.write(program_file.read())
-    program = "python my_program.py"
+    program = "python test.py"
     process = subprocess.Popen(program, stdout=subprocess.PIPE, encoding='utf-8')
     data_text = process.communicate()[0]
     os.remove(temp_origin)
