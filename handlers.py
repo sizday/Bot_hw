@@ -1,5 +1,4 @@
 import io
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
@@ -60,7 +59,7 @@ async def choose_hw(message: Message, state: FSMContext):
 
 
 @dp.message_handler(state=DoneHW.Push, content_types=types.ContentType.DOCUMENT)
-async def push_hw(message: Message, state: FSMContext):
+async def push_picture(message: Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
     done: Done = data.get("done")

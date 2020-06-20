@@ -1,5 +1,6 @@
 import cv2
 import io
+import os
 
 
 def calc_image_hash(filename):
@@ -32,10 +33,16 @@ def compare_hash(hash_1pic, hash_2pic):
 
 
 def compare_picture(original, test):
-    original_file = original.read()
-    test_file = test.read()
+    temp_origin = "origin.png"
+    with open(temp_origin, 'wb') as original_file:
+        original_file.write(original.read())
+    temp_test = "test.png"
+    with open(temp_test, 'wb') as test_file:
+        test_file.write(test.read())
     hash1 = calc_image_hash(test_file)
     hash2 = calc_image_hash(original_file)
+    os.remove(temp_test)
+    os.remove(temp_origin)
     percent = compare_hash(hash1, hash2)
     if percent < 20:
         mark = 5
