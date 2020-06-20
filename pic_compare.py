@@ -30,8 +30,16 @@ def compare_hash(hash_1pic, hash_2pic):
     return count
 
 
-def compare_picture(my_file, original_file):
+def compare_picture(original_file, my_file):
     hash1 = calc_image_hash(my_file)
     hash2 = calc_image_hash(original_file)
     percent = compare_hash(hash1, hash2)
-    return percent
+    if percent < 20:
+        mark = 5
+    elif percent < 30:
+        mark = 4
+    elif percent < 40:
+        mark = 3
+    else:
+        mark = 2
+    return mark
