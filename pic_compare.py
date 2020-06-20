@@ -32,10 +32,8 @@ def compare_hash(hash_1pic, hash_2pic):
 
 
 def compare_picture(original, test):
-    with open(original, 'rb') as f:
-        original_file = io.BytesIO(f.read())
-    with open(test, 'rb') as f:
-        test_file = io.BytesIO(f.read())
+    original_file = io.BytesIO(original.read())
+    test_file = io.BytesIO(test.read())
     hash1 = calc_image_hash(test_file)
     hash2 = calc_image_hash(original_file)
     percent = compare_hash(hash1, hash2)
