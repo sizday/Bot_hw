@@ -95,7 +95,7 @@ async def enter_price(message: Message, state: FSMContext):
     elif hw.type == 'Python':
         python_file = await bot.get_file(file_id=hw.answer)
         python: io.BytesIO = await bot.download_file(python_file.file_path)
-        temp_origin = "my_program.py"
+        temp_origin = "python.txt"
         with open(temp_origin, 'wb') as original_file:
             original_file.write(python.read())
         result = my_program()
