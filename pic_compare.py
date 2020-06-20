@@ -1,4 +1,5 @@
 import cv2
+import io
 
 
 def calc_image_hash(filename):
@@ -30,8 +31,12 @@ def compare_hash(hash_1pic, hash_2pic):
     return count
 
 
-def compare_picture(original_file, my_file):
-    hash1 = calc_image_hash(my_file)
+def compare_picture(original, test):
+    with open(original, 'rb') as f:
+        original_file = io.BytesIO(f.read())
+    with open(test, 'rb') as f:
+        test_file = io.BytesIO(f.read())
+    hash1 = calc_image_hash(test_file)
     hash2 = calc_image_hash(original_file)
     percent = compare_hash(hash1, hash2)
     if percent < 20:
