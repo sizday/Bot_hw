@@ -8,9 +8,11 @@ from database import User, HW, Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
-from auto_check import open_file, open_file_name
+from auto_check import open_file
 from load_all import bot
 from pic_compare import compare_picture
+from my_program import my_program
+
 
 db = database.DBCommands()
 
@@ -90,6 +92,13 @@ async def enter_price(message: Message, state: FSMContext):
         test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = compare_picture(answer, test)
         await db.rate_hw(done.student_id, done.homework_id, result)
+    elif hw.type == 'Python':
+        python_file = await bot.get_file(file_id=hw.answer)
+        python: io.BytesIO = await bot.download_file(python_file.file_path)
+        temp_origin = "my_program.py"
+        with open(temp_origin, 'wb') as original_file:
+            original_file.write(python.read())
+        result = my_program()
     else:
         result = 0
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
