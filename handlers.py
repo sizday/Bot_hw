@@ -97,7 +97,9 @@ async def enter_price(message: Message, state: FSMContext):
         test_file = await bot.get_file(file_id=done.answer)
         answer: io.BytesIO = await bot.download_file(answer_file.file_path)
         python: io.BytesIO = await bot.download_file(test_file.file_path)
-        result = compare_files(answer, python)
+        result = 0
+        data = compare_files(answer, python)
+        await message.answer(f'{data[0]}\n{data[1]}')
     else:
         result = 0
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
