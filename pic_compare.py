@@ -39,8 +39,8 @@ def compare_picture(original, test):
     temp_test = "test.png"
     with open(temp_test, 'wb') as test_file:
         test_file.write(test.read())
-    hash1 = calc_image_hash(test_file)
-    hash2 = calc_image_hash(original_file)
+    hash1 = calc_image_hash(temp_test)
+    hash2 = calc_image_hash(temp_origin)
     os.remove(temp_test)
     os.remove(temp_origin)
     percent = compare_hash(hash1, hash2)
