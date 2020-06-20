@@ -10,7 +10,10 @@ def compare_files(answer_file, program_file):
     program = 'python my_program.py'
     data_text = subprocess.check_output(program, encoding='utf-8', shell=True)
     os.remove(temp_origin)
+    """
     if answer_text == data_text:
         return 5
     else:
         return 2
+        """
+    return answer_text, data_text
