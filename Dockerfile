@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update -y
-RUN apt-get install -y enchant
+RUN apt-get install -y libenchant
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
