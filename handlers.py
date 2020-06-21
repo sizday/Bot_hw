@@ -8,9 +8,11 @@ from database import User, HW, Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
-from auto_check import open_file, open_file_name
+from auto_check import open_file
 from load_all import bot
 from pic_compare import compare_picture
+from python_check import compare_files
+
 
 db = database.DBCommands()
 
@@ -76,22 +78,19 @@ async def enter_price(message: Message, state: FSMContext):
     await db.update_done(done.student_id, done.homework_id, done.answer)
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
+    answer_file = await bot.get_file(file_id=hw.answer)
+    test_file = await bot.get_file(file_id=done.answer)
+    answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+    test: io.BytesIO = await bot.download_file(test_file.file_path)
     if hw.type == 'Test':
-        answer_file = await bot.get_file(file_id=hw.answer)
-        test_file = await bot.get_file(file_id=done.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
-        test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = open_file(answer, test)
-        await db.rate_hw(done.student_id, done.homework_id, result)
     elif hw.type == 'Picture':
-        answer_file = await bot.get_file(file_id=hw.answer)
-        test_file = await bot.get_file(file_id=done.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
-        test: io.BytesIO = await bot.download_file(test_file.file_path)
         result = compare_picture(answer, test)
-        await db.rate_hw(done.student_id, done.homework_id, result)
+    elif hw.type == 'Python':
+        result = compare_files(answer, test)
     else:
         result = 0
+    await db.rate_hw(done.student_id, done.homework_id, result)
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
 
