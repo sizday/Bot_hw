@@ -108,7 +108,6 @@ async def my_marks(message: Message):
     if not all_marks:
         await message.answer('У вас нет оценок')
     else:
-        await message.answer(all_marks)
         text_marks = ''
         for mark in all_marks:
             text_marks = text_marks + str(mark) + ' '
