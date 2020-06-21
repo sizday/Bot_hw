@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-RUN apt-get install -y libenchant-dev
+RUN apt-get install -y enchant
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
