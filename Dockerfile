@@ -1,9 +1,5 @@
 FROM ubuntu:latest
-RUN mkdir /src
-WORKDIR /src
-COPY . /src
-RUN apt-get update -y
-RUN apt-get install -y python3-enchant
+RUN sudo apt-get install -y enchant
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
