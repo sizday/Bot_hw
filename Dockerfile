@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-RUN apt-get install -y enchant
+RUN apt-get install -y python-enchant
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
