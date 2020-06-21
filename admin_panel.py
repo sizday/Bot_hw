@@ -123,5 +123,6 @@ async def rating(message: Message):
     users_marks_dict = await db.list_all_marks()
     text = 'Студент Средний балл\n'
     for key, value in users_marks_dict.items():
-        text += f'{key} - {value}\n'
+        user = await db.get_user(key)
+        text += f'{user.id} - {value}\n'
     await message.answer(text)

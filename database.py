@@ -119,9 +119,9 @@ class DBCommands:
         list_users = []
         list_marks = []
         for num, user in enumerate(users):
-            list_users.append(user)
+            list_users.append(user.id)
             current_user_marks = await self.list_marks_by_id(user.id)
-            list_marks.append(sum(current_user_marks)/len(current_user_marks))
+            list_marks.append(round(sum(current_user_marks)/len(current_user_marks), 2))
         users_marks = dict.fromkeys(list_users, list_marks)
         # sorted_users_marks = sorted(users_marks.items(), key=operator.itemgetter(1))
         return users_marks
