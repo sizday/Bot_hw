@@ -105,7 +105,6 @@ async def enter_price(message: Message, state: FSMContext):
 async def my_marks(message: Message):
     user = await db.get_user(message.from_user)
     all_marks = await db.list_marks_by_id(user.id)
-    await message.answer(all_marks)
     if not all_marks:
         await message.answer('У вас нет оценок')
     else:
