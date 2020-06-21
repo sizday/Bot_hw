@@ -119,7 +119,7 @@ class DBCommands:
         list_users = []
         list_marks = []
         for num, user in enumerate(users):
-            list_users.append(user.id)
+            list_users.append(user.user_id)
             current_user_marks = await self.list_marks_by_id(user.id)
             list_marks.append(round(sum(current_user_marks)/len(current_user_marks), 2))
         users_marks = dict.fromkeys(list_users, list_marks)
