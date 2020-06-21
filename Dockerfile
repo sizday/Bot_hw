@@ -1,5 +1,5 @@
 FROM alpine:3.7
-RUN apk add -y libenchant-dev
+RUN apk --no-cache add enchant
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
