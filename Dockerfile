@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update -y
-RUN apt-get install -y libenchant
+RUN apt-get install -y libenchant1c2a
 FROM python:latest
 RUN mkdir /src
 WORKDIR /src
