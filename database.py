@@ -24,7 +24,7 @@ class HW(db.Model):
     description = Column(String(200))
     type = Column(String(200))
     file = Column(String(200))
-    answer = Column(String(200))
+    answer = Column(String(200), default='')
     query: sql.Select
 
 
