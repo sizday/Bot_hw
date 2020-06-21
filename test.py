@@ -24,4 +24,4 @@ def check_text(answer_file):
     text = clear_me(answer_text)
     print(text)
     misspelled = spell.unknown(text)
-    return len(misspelled)
+    return misspelled
