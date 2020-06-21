@@ -104,6 +104,7 @@ async def enter_price(message: Message, state: FSMContext):
 @dp.message_handler(Command('marks'))
 async def my_marks(message: Message):
     all_marks = await db.list_marks_by_id(message.from_user)
+    await message.answer(all_marks)
     text_marks = ' '.join(all_marks)
     mean_marks = round(sum(all_marks)/len(all_marks), 2)
     await message.answer(f'Ваши оценки:\n{text_marks}\nСредний балл = {mean_marks}')
