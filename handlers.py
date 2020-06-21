@@ -54,7 +54,8 @@ async def choose_hw(message: Message, state: FSMContext):
     except ValueError:
         await message.answer("Неверное значение, введите число")
         return
-    await message.answer(f'Пришлите решение ДЗ №{hw_id} или нажмите /cancel')
+    hw = await db.get_hw(hw_id)
+    await message.answer(f'Пришлите решение ДЗ - {hw.title} или нажмите /cancel')
     user = await db.get_user(chat_id)
     done = await db.get_done(student_id=user.id, homework_id=hw_id)
     await state.update_data(done=done)
