@@ -5,4 +5,4 @@ aiogram~=2.9.2
 opencv-python~=4.2.0.34
 config~=0.5.0.post0
 pyenchant~=3.1.1
-requests~=2.7.0
+requests~=2.24.0
