@@ -1,3 +1,4 @@
+"""
 from enchant import Dict
 import string
 
@@ -17,7 +18,8 @@ def clear_me(file_text):
 
 
 def check_text(answer_file, language):
-    answer_text = str(answer_file.getvalue(), 'utf-8')
+    answer_text = open(answer_file, encoding='utf-8').read()
+    # answer_text = str(answer_file.getvalue(), 'utf-8')
     text = clear_me(answer_text)
     list_text = text.replace('\n', ' ').split(' ')
     if language == 'ru_RU':
@@ -30,10 +32,11 @@ def check_text(answer_file, language):
         if word not in stop_word:
             if not d.check(word):
                 mistakes += 1
-                # print(word)
-                # print(d.suggest(word))
+                print(word)
+                print(d.suggest(word))
     return mistakes
 
 
 # check_text('text_en.txt', 'en_EN')
 # check_text('text_file/text_ru.txt', 'ru_RU')
+"""

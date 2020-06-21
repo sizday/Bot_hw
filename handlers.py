@@ -12,7 +12,7 @@ from auto_check import open_file
 from load_all import bot
 from pic_compare import compare_picture
 from python_check import compare_files
-from grammatic import check_text
+from test import check_text
 
 
 db = database.DBCommands()
