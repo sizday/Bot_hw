@@ -19,7 +19,7 @@ def clear_me(file_text):
     return unit_clear_line(line_clear)
 
 
-def check_text(answer_file, language):
+def check_text(answer_file):
     answer_text = str(answer_file.getvalue(), 'utf-8')
     text = clear_me(answer_text)
     print(text)

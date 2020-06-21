@@ -93,7 +93,7 @@ async def enter_price(message: Message, state: FSMContext):
     elif hw.type == 'Python':
         result = compare_files(answer, test)
     elif hw.type == 'Grammar':
-        result = check_text(answer, test)
+        result = check_text(answer)
     else:
         result = -1
     await db.rate_hw(done.student_id, done.homework_id, result)
