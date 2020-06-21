@@ -8,7 +8,7 @@ import database
 from config import admin_id
 from load_all import dp
 from database import HW, User, Done
-from keyboards import confirm_menu, func_menu, type_hw_menu
+from keyboards import confirm_menu, func_menu, type_hw_menu, lang_menu
 db = database.DBCommands()
 
 '''
@@ -79,17 +79,33 @@ async def add_document(message: Message, state: FSMContext):
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.file = document
-    await message.answer(f"Пришлите файл ответов или /cancel")
+    if hw.type == 'Grammar':
+        await message.answer(f"Выберите язык проверки или /cancel", reply_markup=lang_menu)
+    else:
+        await message.answer(f"Пришлите файл ответов или /cancel")
     await NewHW.Answer.set()
     await state.update_data(hw=hw)
 
 
 @dp.message_handler(user_id=admin_id, state=NewHW.Answer, content_types=types.ContentType.DOCUMENT)
-async def add_document(message: Message, state: FSMContext):
+async def add_answer_document(message: Message, state: FSMContext):
     document = message.document.file_id
     data = await state.get_data()
     hw: HW = data.get("hw")
     hw.answer = document
+    text = f"Название: {hw.title}\nОписание: {hw.description}"
+    await message.answer_document(document=hw.file, caption=text)
+    await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)
+    await NewHW.Confirm.set()
+    await state.update_data(hw=hw)
+
+
+@dp.message_handler(user_id=admin_id, state=NewHW.Answer)
+async def add_answer_lang(message: Message, state: FSMContext):
+    language = message.text
+    data = await state.get_data()
+    hw: HW = data.get("hw")
+    hw.answer = language
     text = f"Название: {hw.title}\nОписание: {hw.description}"
     await message.answer_document(document=hw.file, caption=text)
     await message.answer("Подтверждаете? Нажмите /cancel чтобы отменить", reply_markup=confirm_menu)

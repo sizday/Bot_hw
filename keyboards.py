@@ -33,3 +33,13 @@ type_hw_menu = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
+lang_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="Русский"),
+            KeyboardButton(text="English"),
+        ],
+    ],
+    resize_keyboard=True
+)
