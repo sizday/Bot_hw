@@ -108,7 +108,7 @@ class DBCommands:
         return new_user, 'new'
 
     async def list_marks_by_id(self, user_id):
-        all_done = await Done.query.where((Done.student_id == user_id) & (Done.successful == True)).gino.all()
+        all_done = await Done.query.where((Done.student_id == user_id) & (Done.successful == False)).gino.all()
         list_marks = []
         for num, done in enumerate(all_done):
             list_marks.append(done.marks)
