@@ -13,7 +13,7 @@ def unit_clear_line(line_clear):
 
 
 def clear_me(file_text):
-    stop_list = string.punctuation + string.digits + '«»·—'
+    stop_list = string.punctuation + string.digits + '«»·—–'
     line_clear = [i for i in file_text if (i not in stop_list)]
     return unit_clear_line(line_clear)
 
@@ -21,6 +21,13 @@ def clear_me(file_text):
 def check_text(answer_file):
     answer_text = str(answer_file.getvalue(), 'utf-8')
     text = clear_me(answer_text)
-    print(text)
     misspelled = spell.unknown(text)
-    return misspelled
+    if len(misspelled) < 3:
+        mark = 5
+    elif len(misspelled) < 6:
+        mark = 4
+    elif len(misspelled) < 9:
+        mark = 3
+    else:
+        mark = 2
+    return mark
