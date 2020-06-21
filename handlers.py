@@ -80,12 +80,12 @@ async def enter_price(message: Message, state: FSMContext):
     await message.answer('ДЗ успешно отправлено')
     hw = await db.get_hw(done.homework_id)
     if hw.type != 'Grammar':
-        test_file = await bot.get_file(file_id=done.answer)
-        test: io.BytesIO = await bot.download_file(test_file.file_path)
+        answer_file = await bot.get_file(file_id=hw.answer)
+        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
     else:
-        test = done.answer
-    answer_file = await bot.get_file(file_id=hw.answer)
-    answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        answer = done.answer
+    test_file = await bot.get_file(file_id=done.answer)
+    test: io.BytesIO = await bot.download_file(test_file.file_path)
     if hw.type == 'Test':
         result = open_file(answer, test)
     elif hw.type == 'Picture':
@@ -93,7 +93,7 @@ async def enter_price(message: Message, state: FSMContext):
     elif hw.type == 'Python':
         result = compare_files(answer, test)
     elif hw.type == 'Grammar':
-        data = check_text(answer)
+        data = check_text(test)
         result = len(data)
         await message.answer(data)
     else:
