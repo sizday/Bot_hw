@@ -116,3 +116,16 @@ async def enter_price(message: Message, state: FSMContext):
         await new_done.create()
     await message.answer('ДЗ успешно добавлено', reply_markup=func_menu)
     await state.reset_state()
+
+
+@dp.message_handler(Command('rating'))
+async def rating(message: Message):
+    users_marks_dict = await db.list_all_marks()
+    if not users_marks_dict:
+        await message.answer('В рейтинге ни одного ученика')
+    else:
+        text = 'Студент Средний балл\n'
+        for key, value in users_marks_dict.items():
+            user = await db.get_user(key)
+            text += f'{user.full_name} - {value[0]}\n'
+        await message.answer(text)

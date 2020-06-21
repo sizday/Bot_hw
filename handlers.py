@@ -2,9 +2,9 @@ import io
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
-from aiogram.dispatcher.filters import Command, Text, CommandStart
+from aiogram.dispatcher.filters import Command, CommandStart
 from state import DoneHW
-from database import User, HW, Done
+from database import Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
@@ -54,7 +54,8 @@ async def choose_hw(message: Message, state: FSMContext):
     except ValueError:
         await message.answer("Неверное значение, введите число")
         return
-    await message.answer(f'Пришлите решение ДЗ №{hw_id} или нажмите /cancel')
+    hw = await db.get_hw(hw_id)
+    await message.answer(f'Пришлите решение ДЗ - {hw.title} или нажмите /cancel')
     user = await db.get_user(chat_id)
     done = await db.get_done(student_id=user.id, homework_id=hw_id)
     await state.update_data(done=done)
@@ -99,6 +100,20 @@ async def enter_price(message: Message, state: FSMContext):
     await db.rate_hw(done.student_id, done.homework_id, result)
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
+
+
+@dp.message_handler(Command('marks'))
+async def my_marks(message: Message):
+    user = await db.get_user(message.from_user)
+    all_marks = await db.list_marks_by_id(user.id)
+    if not all_marks:
+        await message.answer('У вас нет оценок')
+    else:
+        text_marks = ''
+        for mark in all_marks:
+            text_marks = text_marks + str(mark) + ' '
+        mean_marks = round(sum(all_marks)/len(all_marks), 2)
+        await message.answer(f'Ваши оценки:\n{text_marks}\nСредний балл = {mean_marks}')
 
 
 @dp.message_handler(Command('all_hw'))
