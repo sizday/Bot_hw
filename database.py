@@ -4,6 +4,7 @@ from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, String, Sequence, Boolean)
 from sqlalchemy import sql
 from config import db_pass, db_user, host
+import operator
 
 db = Gino()
 
@@ -35,7 +36,7 @@ class Done(db.Model):
     homework_id = Column(Integer)
     answer = Column(String(200))
     successful = Column(Boolean, default=False)
-    marks = Column(Integer, default=0)
+    marks = Column(Integer, default=-1)
     query: sql.Select
 
 
@@ -106,10 +107,24 @@ class DBCommands:
             await new_done.create()
         return new_user, 'new'
 
-    async def show_my_marks(self):
-        user_id = types.User.get_current().id
-        marks = await Done.query.where(Done.student_id == user_id).gino.all()
-        return marks
+    async def list_marks_by_id(self, user_id):
+        all_marks = await Done.query.where((Done.student_id == user_id) & (Done.successful == True)).gino.all()
+        list_marks = []
+        for num, mark in enumerate(all_marks):
+            list_marks.append(mark)
+        return list_marks
+
+    async def list_all_marks(self):
+        users = await self.list_user()
+        list_users = []
+        list_marks = []
+        for num, user in enumerate(users):
+            list_users.append(user)
+            current_user_marks = await self.list_marks_by_id(user.id)
+            list_marks.append(sum(current_user_marks)/len(current_user_marks))
+        users_marks = dict.fromkeys(list_users, list_marks)
+        # sorted_users_marks = sorted(users_marks.items(), key=operator.itemgetter(1))
+        return users_marks
 
     async def rate_hw(self, user_id, hw_id, mark):
         current_done = await Done.query.where(Done.student_id == user_id and Done.homework_id == hw_id).gino.first()

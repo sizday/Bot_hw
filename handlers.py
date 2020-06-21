@@ -2,9 +2,9 @@ import io
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
-from aiogram.dispatcher.filters import Command, Text, CommandStart
+from aiogram.dispatcher.filters import Command, CommandStart
 from state import DoneHW
-from database import User, HW, Done
+from database import Done
 import database
 from keyboards import confirm_menu
 from load_all import dp
@@ -99,6 +99,14 @@ async def enter_price(message: Message, state: FSMContext):
     await db.rate_hw(done.student_id, done.homework_id, result)
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
+
+
+@dp.message_handler(Command('marks'))
+async def my_marks(message: Message):
+    all_marks = await db.list_marks_by_id(message.from_user)
+    text_marks = ' '.join(all_marks)
+    mean_marks = round(sum(all_marks)/len(all_marks), 2)
+    await message.answer(f'Ваши оценки:\n{text_marks}\nСредний балл = {mean_marks}')
 
 
 @dp.message_handler(Command('all_hw'))
