@@ -3,8 +3,7 @@ from gino import Gino
 from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, String, Sequence, Boolean)
 from sqlalchemy import sql
-from config import db_pass, db_user, host
-import operator
+from preload.config import db_pass, db_user, host
 
 db = Gino()
 

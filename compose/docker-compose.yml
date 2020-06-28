@@ -13,7 +13,7 @@ services:
   tgbot:
     container_name: bot_hw
     build:
-      context: .
+      context: ..
     command: python app.py
     restart: always
     network_mode: "host"

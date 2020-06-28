@@ -1,8 +1,8 @@
-from database import DBCommands
-from load_all import dp
+from database.database import DBCommands
+from preload.load_all import dp
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command
-from admin import Admin
+from users.admin import Admin
 
 db = DBCommands()
 denis = Admin()

@@ -3,14 +3,14 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command, CommandStart
-from state import DoneHW
-from database import DBCommands, Done
-from keyboards import confirm_menu
-from load_all import dp, bot
-from auto_check import open_file
-from pic_compare import compare_picture
-from python_check import compare_files
-from grammatic import check_text
+from database.state import DoneHW
+from database.database import DBCommands, Done
+from others.keyboards import confirm_menu
+from preload.load_all import dp, bot
+from testing.test import open_file
+from testing.pictures import compare_picture
+from testing.program import compare_files
+from testing.grammatic import check_text
 
 
 db = DBCommands()

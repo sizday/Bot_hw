@@ -1,4 +1,4 @@
-from config import admin_id
+from preload.config import admin_id
 
 
 class Admin:

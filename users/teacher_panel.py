@@ -2,10 +2,10 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
-from state import NewHW
-from load_all import dp
-from database import HW, Done, DBCommands
-from keyboards import confirm_menu, func_menu, type_hw_menu
+from database.state import NewHW
+from preload.load_all import dp
+from database.database import HW, Done, DBCommands
+from others.keyboards import confirm_menu, func_menu, type_hw_menu
 
 db = DBCommands()
 
