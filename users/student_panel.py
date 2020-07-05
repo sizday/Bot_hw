@@ -1,21 +1,19 @@
-import io
+from io import BytesIO
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command, CommandStart
-from state import DoneHW
-from database import Done
-import database
-from keyboards import confirm_menu
-from load_all import dp
-from auto_check import open_file
-from load_all import bot
-from pic_compare import compare_picture
-from python_check import compare_files
-from grammatic import check_text
+from database.state import DoneHW
+from database.database import DBCommands, Done
+from others.keyboards import confirm_menu
+from preload.load_all import dp, bot
+from testing.test import open_file
+from testing.pictures import compare_picture
+from testing.program import compare_files
+from testing.grammatic import check_text
 
 
-db = database.DBCommands()
+db = DBCommands()
 
 
 @dp.message_handler(CommandStart())
@@ -82,11 +80,11 @@ async def enter_price(message: Message, state: FSMContext):
     hw = await db.get_hw(done.homework_id)
     if hw.type != 'Grammar':
         answer_file = await bot.get_file(file_id=hw.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        answer: BytesIO = await bot.download_file(answer_file.file_path)
     else:
         answer = hw.answer
     test_file = await bot.get_file(file_id=done.answer)
-    test: io.BytesIO = await bot.download_file(test_file.file_path)
+    test: BytesIO = await bot.download_file(test_file.file_path)
     if hw.type == 'Test':
         result = open_file(answer, test)
     elif hw.type == 'Picture':

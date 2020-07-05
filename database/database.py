@@ -3,8 +3,7 @@ from gino import Gino
 from gino.schema import GinoSchemaVisitor
 from sqlalchemy import (Column, Integer, String, Sequence, Boolean)
 from sqlalchemy import sql
-from config import db_pass, db_user, host
-import operator
+from preload.config import db_pass, db_user, host
 
 db = Gino()
 
@@ -15,6 +14,7 @@ class User(db.Model):
     user_id = Column(Integer)
     full_name = Column(String(100))
     username = Column(String(50))
+    type = Column(String(50))
     query: sql.Select
 
 
@@ -140,6 +140,14 @@ class DBCommands:
         user = await self.get_user(user_id)
         done_unmade_list = await Done.query.where((Done.student_id == user.id) & (Done.successful == False)).gino.all()
         return done_unmade_list
+
+    async def is_teacher(self) -> bool:
+        user_id = types.User.get_current().id
+        user = await self.get_user(user_id)
+        if user.type == 'Student':
+            return False
+        else:
+            return True
 
 
 async def create_db():
