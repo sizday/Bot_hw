@@ -1,21 +1,19 @@
-import io
+from io import BytesIO
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
-from aiogram.dispatcher.filters import Command, Text, CommandStart
-from state import DoneHW
-from database import User, HW, Done
-import database
-from keyboards import confirm_menu
-from load_all import dp
-from auto_check import open_file
-from load_all import bot
-from pic_compare import compare_picture
-from python_check import compare_files
-from grammatic import check_text
+from aiogram.dispatcher.filters import Command, CommandStart
+from database.state import DoneHW
+from database.database import DBCommands, Done
+from others.keyboards import confirm_menu
+from preload.load_all import dp, bot
+from testing.test import open_file
+from testing.pictures import compare_picture
+from testing.program import compare_files
+from testing.grammatic import check_text
 
 
-db = database.DBCommands()
+db = DBCommands()
 
 
 @dp.message_handler(CommandStart())
@@ -54,7 +52,8 @@ async def choose_hw(message: Message, state: FSMContext):
     except ValueError:
         await message.answer("Неверное значение, введите число")
         return
-    await message.answer(f'Пришлите решение ДЗ №{hw_id} или нажмите /cancel')
+    hw = await db.get_hw(hw_id)
+    await message.answer(f'Пришлите решение ДЗ - {hw.title} или нажмите /cancel')
     user = await db.get_user(chat_id)
     done = await db.get_done(student_id=user.id, homework_id=hw_id)
     await state.update_data(done=done)
@@ -81,11 +80,11 @@ async def enter_price(message: Message, state: FSMContext):
     hw = await db.get_hw(done.homework_id)
     if hw.type != 'Grammar':
         answer_file = await bot.get_file(file_id=hw.answer)
-        answer: io.BytesIO = await bot.download_file(answer_file.file_path)
+        answer: BytesIO = await bot.download_file(answer_file.file_path)
     else:
         answer = hw.answer
     test_file = await bot.get_file(file_id=done.answer)
-    test: io.BytesIO = await bot.download_file(test_file.file_path)
+    test: BytesIO = await bot.download_file(test_file.file_path)
     if hw.type == 'Test':
         result = open_file(answer, test)
     elif hw.type == 'Picture':
@@ -99,6 +98,20 @@ async def enter_price(message: Message, state: FSMContext):
     await db.rate_hw(done.student_id, done.homework_id, result)
     await message.answer(f'ДЗ проверено, ваша оценка = {result}')
     await state.reset_state()
+
+
+@dp.message_handler(Command('marks'))
+async def my_marks(message: Message):
+    user = await db.get_user(message.from_user)
+    all_marks = await db.list_marks_by_id(user.id)
+    if not all_marks:
+        await message.answer('У вас нет оценок')
+    else:
+        text_marks = ''
+        for mark in all_marks:
+            text_marks = text_marks + str(mark) + ' '
+        mean_marks = round(sum(all_marks)/len(all_marks), 2)
+        await message.answer(f'Ваши оценки:\n{text_marks}\nСредний балл = {mean_marks}')
 
 
 @dp.message_handler(Command('all_hw'))
